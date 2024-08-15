@@ -7,13 +7,15 @@ function Layout() {
         <div className="flex justify-between items-end px-7 py-5 text-primary bg-white fixed left-0 right-0 lg:w-full mx-auto top-0 z-20 border-b border-orange-60">
           <div className="logo">
             <h2 className="font-[cursive] tracking-tighter font-semibold text-xl text-orange-600">
-              Business Intelligence Team Rating
+              Attendance App
             </h2>
-            <p className="text-[0.6em] italic">Simple and easy voting app</p>
+            <p className="text-[0.6em] italic">Simple Attendance App</p>
           </div>
           <div className="text-sm text-orange-700">
             <div>
-              <Link to="/contact_us" className="cursor-pointer">Contact Us</Link>
+              <Link to="/contact_us" className="cursor-pointer">
+                Contact Us
+              </Link>
             </div>
           </div>
         </div>

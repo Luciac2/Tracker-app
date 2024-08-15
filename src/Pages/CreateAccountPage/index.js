@@ -123,7 +123,7 @@ const CreateAccountPage = () => {
               label: "State",
               name: "state",
               type: "text",
-              placeholder: "State",
+              placeholder: "Lagos",
             },
             {
               label: "Line Manager",
@@ -148,7 +148,7 @@ const CreateAccountPage = () => {
                 required
                 placeholder={placeholder}
                 pattern={pattern}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
               />
             </div>
           ))}
@@ -165,7 +165,7 @@ const CreateAccountPage = () => {
               value={formData.bank}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
             >
               <option value="" disabled>
                 Select your bank
@@ -179,7 +179,7 @@ const CreateAccountPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
+            className="w-full py-3 px-4 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
           >
             Create Account
           </button>
