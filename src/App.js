@@ -7,6 +7,7 @@ import CreateAccountPage from "./Pages/CreateAccountPage";
 import LoginPage from "./Pages/LoginPage";
 import ForgotPasswordPage from "./Pages/ForgetPasswordPage/";
 import Dashboard from "./Pages/Dashboard";
+import Report from "./Pages/Report";
 // import CheckinPage from "./Pages/CheckinPage";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Route path="/Signup" element={<CreateAccountPage />} />
       <Route path="/Loginpage" element={<LoginPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard/report" element={<Report />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       {/* <Route path="/Checkin" element={<CheckinPage />} /> */}
       <Route path="/Layout" element={<Layout />} />
