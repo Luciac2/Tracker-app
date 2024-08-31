@@ -21,7 +21,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       {/* <Route path="/Checkin" element={<CheckinPage />} /> */}
       <Route path="/Layout" element={<Layout />} />
-      <Route path="*" element={<PageError />} />
+      <Route path="*" element={<PzwwageError />} />
     </Routes>
   );
 }

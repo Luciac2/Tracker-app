@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
     const userId = "user123"; // Replace with actual user ID
@@ -141,6 +142,9 @@ function Dashboard() {
         <div>
             <h4 className="text-3xl">Welcome Samuel Adekoya</h4>
             <p>Check in for today</p>
+        </div>
+        <div className="relative">
+            <Link to="report" className="bg-orange-500 rounded-md text-white py-1.5 px-6 absolute right-0 -top-10">Report</Link>
         </div>
         <div className="form mt-20">
             <div className="grid grid-cols-2 gap-10">
