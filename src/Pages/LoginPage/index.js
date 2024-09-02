@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Font Awesome icons
+import { Api } from "../../api/api.config";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -19,7 +21,19 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login submission
-    console.log("Login form submitted", loginData);
+    if (!submitting) {
+      setSubmitting(true);
+      Api.post("/login", loginData)
+        .then((response) => {
+          console.log(response);
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setSubmitting(false);
+        });
+      console.log("Login form submitted", loginData);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -37,18 +51,18 @@ const LoginPage = () => {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="username"
+              htmlFor="email"
             >
-              Username
+              Email
             </label>
             <input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              value={loginData.username}
+              value={loginData.email}
               onChange={handleChange}
               required
-              placeholder="Enter your username"
+              placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
             />
           </div>
