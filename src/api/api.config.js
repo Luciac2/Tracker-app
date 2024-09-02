@@ -4,7 +4,7 @@ const baseURL = process.env.REACT_APP_API_URL;
 
 export const Api = axios.create({
   baseURL,
-  withCredentials: true,
+  withCredentials: false,
 });
 
 //axios.get("url")

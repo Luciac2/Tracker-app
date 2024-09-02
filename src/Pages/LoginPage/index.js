@@ -5,17 +5,26 @@ import { Api } from "../../api/api.config";
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
     email: "",
-    password: "",
+    passWord: "",
   });
   const [submitting, setSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.name == "password") {
+      setLoginData({
+        ...loginData,
+        passWord: e.target.value,
+      });
+      
+    } else {
+      
+      setLoginData({
+        ...loginData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
