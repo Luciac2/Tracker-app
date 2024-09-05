@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 
 // Sample data for demonstration
 const sampleUserData = [
@@ -59,6 +60,16 @@ function Report () {
     setSelectedRange(e.target.value);
   };
 
+  // Function to download the report as XLS
+  const downloadXLS = () => {
+    const ws = XLSX.utils.json_to_sheet(reportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Report');
+
+    // Generate and download Excel file
+    XLSX.writeFile(wb, `report_${selectedRange}.xlsx`);
+  };
+
   return (
     <div className="max-w-[1400px] mx-auto px-2 py-3">
       <h2 className='text-3xl font-bold text-center'>Report Page</h2>
@@ -76,30 +87,37 @@ function Report () {
 
       <div className="report-results text-center mt-8 px-4">
         {reportData.length > 0 ? (
-          <table className='w-full border'> 
-            <thead className='bg-orange-600 text-sm text-white h-12 font-semibold'>
-              <tr className=''>
-                <th>S/N</th>
-                <th className=''>Username</th>
-                <th>Date</th>
-                <th>Time Checked In</th>
-                <th>Time Checked Out</th>
-                <th>Image Uploaded</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reportData.map((data, index) => (
-                <tr key={index} className='py-4 bg-red-50'>
+          <>
+            <table className='w-full border'> 
+              <thead className='bg-orange-600 text-sm text-white h-12 font-semibold'>
+                <tr className=''>
+                  <th>S/N</th>
+                  <th className=''>Username</th>
+                  <th>Date</th>
+                  <th>Time Checked In</th>
+                  <th>Time Checked Out</th>
+                  <th>Image Uploaded</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportData.map((data, index) => (
+                  <tr key={index} className='py-4 bg-red-50'>
                     <td>{index + 1}</td> {/* Index number */}
                     <td className='py-3'>{data.username}</td>
                     <td>{new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' })}</td>
                     <td>{data.timeCheckedIn}</td>
                     <td>{data.timeCheckedOut}</td>
                     <td>{data.imageUploaded}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Download as XLS button */}
+            <button onClick={downloadXLS} className='mt-4 px-6 py-2 bg-green-600 text-white rounded'>
+              Download
+            </button>
+          </>
         ) : (
           <p className='text-black font-semibold text-lg'>No data available for the selected range....</p>
         )}
