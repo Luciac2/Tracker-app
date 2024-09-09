@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Font Awesome icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Api } from "../../api/api.config";
 
 const LoginPage = () => {
@@ -12,14 +12,12 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    if (e.target.name == "password") {
+    if (e.target.name === "password") {
       setLoginData({
         ...loginData,
         passWord: e.target.value,
       });
-      
     } else {
-      
       setLoginData({
         ...loginData,
         [e.target.name]: e.target.value,
@@ -34,6 +32,10 @@ const LoginPage = () => {
       setSubmitting(true);
       Api.post("/login", loginData)
         .then((response) => {
+          const { data } = response.data;
+
+          localStorage.setItem("token", data.userToken);
+          console.log(data);
           console.log(response);
           setSubmitting(false);
         })
@@ -94,7 +96,7 @@ const LoginPage = () => {
                 placeholder="Enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
               />
-              {/* Toggle Password Visibility Icon */}
+
               <span
                 onClick={togglePasswordVisibility}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -108,7 +110,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Forgot Password Link */}
           <div className="text-right">
             <a
               href="/forgot-password"
