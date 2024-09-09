@@ -115,7 +115,6 @@ function Report() {
   const handleRangeChange = (e) => {
     setSelectedRange(e.target.value);
   };
-
   const handleDateChange = (e) => {
     setCustomDate(e.target.value);
     setSelectedRange("customDate");
@@ -238,5 +237,4 @@ function Report() {
     </div>
   );
 }
-
 export default Report;

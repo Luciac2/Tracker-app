@@ -10,7 +10,6 @@ import ResetPassword from "./Pages/Resetpassword"; //
 import CheckIn from "./Pages/CheckIn";
 import Dashboard from "./Pages/Dashboard";
 import Report from "./Pages/Report";
-
 // import CheckinPage from "./Pages/CheckinPage";
 
 function App() {
