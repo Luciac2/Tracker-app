@@ -1,16 +1,24 @@
 import React, { useState } from "react";
+import { Api } from "../../api/api.config"; // Import your API configuration
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement logic for handling the password reset
-    console.log("Password reset link sent to:", email);
+
+    try {
+      await Api.post("/forgotpassword", { email }); // Use Api instance
+      setMessage("Password reset link sent to your email address.");
+    } catch (error) {
+      console.error("Error sending reset link", error);
+      setMessage("Failed to send reset link. Please try again.");
+    }
   };
 
   return (
@@ -47,6 +55,8 @@ const ForgotPasswordPage = () => {
             Send Reset Link
           </button>
         </form>
+
+        {message && <p className="mt-4 text-center text-gray-600">{message}</p>}
       </div>
     </div>
   );

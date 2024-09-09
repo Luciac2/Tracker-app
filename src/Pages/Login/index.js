@@ -1,25 +1,50 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Font Awesome icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Api } from "../../api/api.config";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
-    username: "",
-    password: "",
+    email: "",
+    passWord: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.name === "password") {
+      setLoginData({
+        ...loginData,
+        passWord: e.target.value,
+      });
+    } else {
+      setLoginData({
+        ...loginData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login submission
-    console.log("Login form submitted", loginData);
+    if (!submitting) {
+      setSubmitting(true);
+      Api.post("/login", loginData)
+        .then((response) => {
+          const { data } = response.data;
+
+          localStorage.setItem("token", data.userToken);
+          console.log(data);
+          console.log(response);
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setSubmitting(false);
+        });
+      console.log("Login form submitted", loginData);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -37,18 +62,18 @@ const LoginPage = () => {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="username"
+              htmlFor="email"
             >
-              Username
+              Email
             </label>
             <input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
-              value={loginData.username}
+              value={loginData.email}
               onChange={handleChange}
               required
-              placeholder="Enter your username"
+              placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
             />
           </div>
@@ -71,7 +96,7 @@ const LoginPage = () => {
                 placeholder="Enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
               />
-              {/* Toggle Password Visibility Icon */}
+
               <span
                 onClick={togglePasswordVisibility}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -85,7 +110,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Forgot Password Link */}
           <div className="text-right">
             <a
               href="/forgot-password"

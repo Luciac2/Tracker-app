@@ -1,36 +1,82 @@
 import React, { useState } from "react";
+import { Api } from "../../api/api.config";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const CreateAccountPage = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    username: "",
+    fullName: "",
     phoneNumber: "",
     email: "",
+    password: "",
+    bankName: "",
     accountNumber: "",
     accountName: "",
-    bank: "",
-    password: "",
-    confirmPassword: "",
-    localGovt: "",
     state: "",
-    lineManager: "",
+    location: "",
+    identification: null,
+    profilePicture: null,
+    role: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const handleChange = (e) => {
+    const { name, value, files } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: files ? files[0] : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+
+    if (!submitting) {
+      setSubmitting(true);
+
+      const form = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== null && formData[key] !== undefined) {
+          form.append(key, formData[key]);
+        }
+      });
+
+      try {
+        const response = await Api.post("/signup", form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Signup successful", response.data);
+        setFormData({
+          fullName: "",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          bankName: "",
+          accountNumber: "",
+          accountName: "",
+          state: "",
+          location: "",
+          identification: null,
+          profilePicture: null,
+          role: "",
+        });
+        navigate("/Loginpage"); // Redirect to the login page after successful signup
+      } catch (error) {
+        console.error("Signup failed", error);
+        if (error.response) {
+          const errorCode = error.response.status;
+          console.error(`Problem occurred. Received status: ${errorCode}`);
+          console.error("Error details:", error.response.data);
+        } else {
+          console.error("Did not receive response");
+        }
+      } finally {
+        setSubmitting(false);
+      }
     }
-    // Handle form submission
-    console.log("Form submitted", formData);
   };
 
   const banksInNigeria = [
@@ -55,6 +101,22 @@ const CreateAccountPage = () => {
     "FairMoney",
   ];
 
+  const roles = [
+    "Samplers",
+    "Cadders",
+    "Mapper",
+    "FTD",
+    "CDP",
+    "TDE",
+    "Merchandizer",
+    "BRE",
+    "IME",
+    "SME",
+    "FME",
+    "CEE",
+    "VSS",
+  ];
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
@@ -64,81 +126,49 @@ const CreateAccountPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {[
             {
-              label: "Name",
-              name: "name",
+              name: "fullName",
               type: "text",
-              placeholder: "John Adetayo",
+              placeholder: "Enter your full name",
             },
             {
-              label: "Username",
-              name: "username",
-              type: "text",
-              placeholder: "Username",
-            },
-            {
-              label: "Phone Number",
               name: "phoneNumber",
               type: "tel",
-              placeholder: "08000000000",
+              placeholder: "Enter your phone number",
               pattern: "\\d{11}",
             },
             {
-              label: "Email Address",
               name: "email",
               type: "email",
-              placeholder: "example@example.com",
+              placeholder: "Enter your email address",
             },
             {
-              label: "Account Number",
-              name: "accountNumber",
-              type: "text",
-              placeholder: "1234567890",
-              pattern: "\\d{10}",
-            },
-            {
-              label: "Account Name",
-              name: "accountName",
-              type: "text",
-              placeholder: "Account Holder Name",
-            },
-            {
-              label: "Password",
               name: "password",
               type: "password",
               placeholder: "Enter your password",
             },
             {
-              label: "Confirm Password",
-              name: "confirmPassword",
-              type: "password",
-              placeholder: "Confirm your password",
-            },
-            {
-              label: "Segment",
-              name: "Segment",
+              name: "accountNumber",
               type: "text",
-              placeholder: "Segment",
+              placeholder: "Enter your 10-digit account number",
+              pattern: "\\d{10}",
             },
             {
-              label: "State",
+              name: "accountName",
+              type: "text",
+              placeholder: "Enter the account holder name",
+            },
+            {
               name: "state",
               type: "text",
-              placeholder: "Lagos",
+              placeholder: "Enter your state of residence",
             },
             {
-              label: "Line Manager",
-              name: "lineManager",
+              name: "location",
               type: "text",
-              placeholder: "Manager Name",
+              placeholder: "Enter your city/town",
             },
-          ].map(({ label, name, type, placeholder, pattern }) => (
+          ].map(({ name, type, placeholder, pattern }) => (
             <div key={name}>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                htmlFor={name}
-              >
-                {label}
-              </label>
               <input
                 id={name}
                 name={name}
@@ -153,16 +183,10 @@ const CreateAccountPage = () => {
             </div>
           ))}
           <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="bank"
-            >
-              Bank
-            </label>
             <select
-              id="bank"
-              name="bank"
-              value={formData.bank}
+              id="bankName"
+              name="bankName"
+              value={formData.bankName}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
@@ -177,13 +201,64 @@ const CreateAccountPage = () => {
               ))}
             </select>
           </div>
+          <div>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            >
+              <option value="" disabled>
+                Select your role
+              </option>
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <input
+              id="identification"
+              name="identification"
+              type="file"
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            />
+          </div>
+          <div>
+            <input
+              id="profilePicture"
+              name="profilePicture"
+              type="file"
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            />
+          </div>
           <button
             type="submit"
+            disabled={submitting}
             className="w-full py-3 px-4 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
           >
-            Create Account
+            {submitting ? "Submitting..." : "Create Account"}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <a
+              href="/Loginpage"
+              className="text-orange-600 hover:text-orange-700 font-semibold"
+            >
+              Login
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

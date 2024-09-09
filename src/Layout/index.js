@@ -1,36 +1,66 @@
-import { Link, Outlet } from "react-router-dom";
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
 
-function Layout() {
+const Layout = () => {
   return (
-    <div className="App font-sans-serif mx-auto h-auto">
-      <header>
-        <div className="flex justify-between items-end px-7 py-5 text-primary bg-white fixed left-0 right-0 lg:w-full mx-auto top-0 z-20 border-b border-orange-60">
-          <div className="logo">
-            <h2 className="font-[cursive] tracking-tighter font-semibold text-xl text-orange-600">
-              Attendance App
-            </h2>
-            <p className="text-[0.6em] italic">Simple Attendance App</p>
+    <div className="flex flex-col min-h-screen">
+      {/* Main Content Area */}
+      <div className="flex flex-grow">
+        {/* Sidebar */}
+        <aside className="w-64 bg-orange-600 text-white p-4 flex-shrink-0">
+          <div className="text-2xl font-bold mb-6">
+            <Link to="/">Attendance App</Link>
           </div>
-          <div className="text-sm text-orange-700">
-            <div>
-              <Link to="/contact_us" className="cursor-pointer">
-                Contact Us
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/dashboard"
+                className="block p-2 hover:bg-orange-700 rounded"
+              >
+                Dashboard
               </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-      <main className="min-h-screen md:pt-[148px] pt-[60px] md:pb-[40px] pb-[8px]">
-        <Outlet />
-      </main>
+            </li>
+            <li>
+              <Link
+                to="/report"
+                className="block p-2 hover:bg-orange-700 rounded"
+              >
+                Report
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/loginpage"
+                className="block p-2 hover:bg-orange-700 rounded"
+              >
+                Login
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/signup"
+                className="block p-2 hover:bg-orange-700 rounded"
+              >
+                Sign Up
+              </Link>
+            </li>
+          </ul>
+        </aside>
 
-      <footer>
-        <div className="bg-orange-600 text-white mt-4 py-10 px-4 text-[10px] text-center w-full">
-          <p>creatives techmind ~ 2024</p>
-        </div>
+        {/* Main Content */}
+        <main className="flex-grow p-4 bg-gray-100">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white text-center p-4">
+        <p>
+          &copy; {new Date().getFullYear()} Attendance App. All rights reserved.
+        </p>
       </footer>
     </div>
   );
-}
+};
 
 export default Layout;
