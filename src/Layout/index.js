@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 
 const Layout = () => {
   return (
@@ -9,40 +9,68 @@ const Layout = () => {
         {/* Sidebar */}
         <aside className="w-64 bg-orange-600 text-white p-4 flex-shrink-0">
           <div className="text-2xl font-bold mb-6">
-            <Link to="/">Attendance App</Link>
+            <NavLink to="/">Attendance App</NavLink>
           </div>
           <ul className="space-y-4">
             <li>
-              <Link
+              <NavLink
                 to="/dashboard"
-                className="block p-2 hover:bg-orange-700 rounded"
+                className={({ isActive }) =>
+                  isActive
+                    ? "underline block p-2 hover:bg-orange-700 rounded"
+                    : "block p-2 hover:bg-orange-700 rounded"
+                }
               >
                 Dashboard
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
+                to="/Checkin"
+                className={({ isActive }) =>
+                  isActive
+                    ? "underline block p-2 hover:bg-orange-700 rounded"
+                    : "block p-2 hover:bg-orange-700 rounded"
+                }
+              >
+                Check-in
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
                 to="/report"
-                className="block p-2 hover:bg-orange-700 rounded"
+                className={({ isActive }) =>
+                  isActive
+                    ? "underline block p-2 hover:bg-orange-700 rounded"
+                    : "block p-2 hover:bg-orange-700 rounded"
+                }
               >
                 Report
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/loginpage"
-                className="block p-2 hover:bg-orange-700 rounded"
+                className={({ isActive }) =>
+                  isActive
+                    ? "underline block p-2 hover:bg-orange-700 rounded"
+                    : "block p-2 hover:bg-orange-700 rounded"
+                }
               >
                 Login
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/signup"
-                className="block p-2 hover:bg-orange-700 rounded"
+                className={({ isActive }) =>
+                  isActive
+                    ? "underline block p-2 hover:bg-orange-700 rounded"
+                    : "block p-2 hover:bg-orange-700 rounded"
+                }
               >
                 Sign Up
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </aside>

@@ -57,7 +57,7 @@ const CheckInForm = () => {
       }
     }
   };
-
+console.log(response)
   return (
     <div>
       <form onSubmit={handleSubmit}>
