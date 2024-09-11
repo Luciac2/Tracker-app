@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx"; // Import the xlsx library
 
-// Sample data for demonstration with new fields
 const sampleUserData = [
+  // Sample user data for demonstration with new fields
   {
     username: "John Doe",
     date: "2024-08-30",
@@ -16,7 +16,7 @@ const sampleUserData = [
     bankName: "First Bank",
     accountNumber: "123456789",
     accountName: "John Ola",
-    checkInTime: "07:55 AM", // Added checkInTime field
+    checkInTime: "07:55 AM",
   },
   {
     username: "Jane Ola",
@@ -31,21 +31,22 @@ const sampleUserData = [
     bankName: "Chase",
     accountNumber: "987654321",
     accountName: "Jane Doe",
-    checkInTime: "08:45 AM", // Added checkInTime field
+    checkInTime: "08:45 AM",
   },
-  // ... add more sample data with new fields
 ];
 
 function Report() {
   const [selectedRange, setSelectedRange] = useState("today");
   const [reportData, setReportData] = useState([]);
-  const [customDate, setCustomDate] = useState(""); // State for the custom date
+  const [customDate, setCustomDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     if (selectedRange) {
       fetchReportData(selectedRange);
     }
-  }, [selectedRange, customDate]); // Re-run the effect when customDate changes
+  }, [selectedRange, customDate, startDate, endDate]);
 
   const fetchReportData = (range) => {
     let filteredData = [];
@@ -105,6 +106,16 @@ function Report() {
           );
         }
         break;
+      case "customRange":
+        if (startDate && endDate) {
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          filteredData = sampleUserData.filter(
+            (data) =>
+              new Date(data.date) >= start && new Date(data.date) <= end
+          );
+        }
+        break;
       default:
         break;
     }
@@ -118,6 +129,14 @@ function Report() {
   const handleDateChange = (e) => {
     setCustomDate(e.target.value);
     setSelectedRange("customDate");
+  };
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+    setSelectedRange("customRange");
+  };
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+    setSelectedRange("customRange");
   };
 
   const downloadExcel = () => {
@@ -158,6 +177,7 @@ function Report() {
           <option value="thisMonth">This Month</option>
           <option value="lastMonth">Last Month</option>
           <option value="customDate">Custom Date</option>
+          <option value="customRange">Custom Range</option>
         </select>
         {selectedRange === "customDate" && (
           <input
@@ -166,6 +186,24 @@ function Report() {
             onChange={handleDateChange}
             className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
           />
+        )}
+        {selectedRange === "customRange" && (
+          <>
+            <input
+              type="date"
+              value={startDate}
+              onChange={handleStartDateChange}
+              placeholder="Start Date"
+              className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={handleEndDateChange}
+              placeholder="End Date"
+              className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
+            />
+          </>
         )}
         <button
           className="text-orange-700"
@@ -187,7 +225,7 @@ function Report() {
                 <th>Username</th>
                 <th>Date</th>
                 <th>Time Checked In</th>
-                <th>Status</th> {/* Added column header for Status */}
+                <th>Status</th>
                 <th>Time Checked Out</th>
                 <th>Image Uploaded</th>
                 <th>State</th>
@@ -207,34 +245,32 @@ function Report() {
                   <td>
                     {new Date(data.date).toLocaleDateString("en-US", {
                       weekday: "long",
-                      day: "numeric",
-                      month: "numeric",
                       year: "numeric",
+                      month: "short",
+                      day: "numeric",
                     })}
                   </td>
                   <td>{data.timeCheckedIn}</td>
-                  <td>{formatStatus(data.timeCheckedIn)}</td>{" "}
-                  {/* Added Status data */}
+                  <td>{formatStatus(data.checkInTime)}</td>
                   <td>{data.timeCheckedOut}</td>
                   <td>{data.imageUploaded}</td>
                   <td>{data.state}</td>
                   <td>{data.location}</td>
-                  <td>{data.fullName || "N/A"}</td>
-                  <td>{data.phoneNumber || "N/A"}</td>
-                  <td>{data.bankName || "N/A"}</td>
-                  <td>{data.accountNumber || "N/A"}</td>
-                  <td>{data.accountName || "N/A"}</td>
+                  <td>{data.fullName}</td>
+                  <td>{data.phoneNumber}</td>
+                  <td>{data.bankName}</td>
+                  <td>{data.accountNumber}</td>
+                  <td>{data.accountName}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p className="text-black font-semibold text-lg">
-            No data available for the selected range....
-          </p>
+          <p className="text-red-500">No report data found for the selected range.</p>
         )}
       </div>
     </div>
   );
 }
+
 export default Report;
