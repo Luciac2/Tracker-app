@@ -6,7 +6,6 @@ const CheckInForm = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
 
-  // Handle file selection
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -57,7 +56,7 @@ const CheckInForm = () => {
       }
     }
   };
-console.log(response)
+  console.log(response);
   return (
     <div>
       <form onSubmit={handleSubmit}>

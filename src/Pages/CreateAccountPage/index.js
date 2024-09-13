@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Api } from "../../api/api.config";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const CreateAccountPage = () => {
   const [formData, setFormData] = useState({
@@ -80,19 +80,19 @@ const CreateAccountPage = () => {
   };
 
   const banksInNigeria = [
-    "Access Bank",
+    "AccessBank",
     "First Bank of Nigeria",
     "Guaranty Trust Bank (GTBank)",
     "United Bank for Africa (UBA)",
     "Zenith Bank",
     "Fidelity Bank",
     "Union Bank",
-    "Stanbic IBTC Bank",
+    "StanbicIBTC Bank",
     "Sterling Bank",
     "EcoBank",
-    "Polaris Bank",
-    "Wema Bank",
-    "Heritage Bank",
+    "PolarisBank",
+    "WemaBank",
+    "HeritageBank",
     "Opay",
     "Moniepoint",
     "Palmpay",
@@ -102,19 +102,19 @@ const CreateAccountPage = () => {
   ];
 
   const roles = [
-    "Samplers",
-    "Cadders",
-    "Mapper",
-    "FTD",
-    "CDP",
-    "TDE",
-    "Merchandizer",
-    "BRE",
-    "IME",
-    "SME",
-    "FME",
-    "CEE",
-    "VSS",
+    "sampler",
+    "cader",
+    "mapper",
+    "Ftd",
+    "Cdp",
+    "Tde",
+    "Merchandiser",
+    "Bre",
+    "Ime",
+    "Sme",
+    "Fme",
+    "Cee",
+    "Vss",
   ];
 
   return (

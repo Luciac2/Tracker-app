@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx"; // Import the xlsx library
+import DateRangeFilter from "./../DateRangeFilter"; // Import DateRangeFilter
 
 const sampleUserData = [
   // Sample user data for demonstration with new fields
@@ -36,107 +37,36 @@ const sampleUserData = [
 ];
 
 function Report() {
-  const [selectedRange, setSelectedRange] = useState("today");
   const [reportData, setReportData] = useState([]);
-  const [customDate, setCustomDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
 
   useEffect(() => {
-    if (selectedRange) {
-      fetchReportData(selectedRange);
-    }
-  }, [selectedRange, customDate, startDate, endDate]);
+    fetchReportData();
+  }, [dateRange]);
 
-  const fetchReportData = (range) => {
+  const fetchReportData = () => {
     let filteredData = [];
+    const { startDate, endDate } = dateRange;
     const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 7);
 
-    switch (range) {
-      case "today":
-        filteredData = sampleUserData.filter(
-          (data) => new Date(data.date).toDateString() === today.toDateString()
-        );
-        break;
-      case "yesterday":
-        filteredData = sampleUserData.filter(
-          (data) =>
-            new Date(data.date).toDateString() === yesterday.toDateString()
-        );
-        break;
-      case "last7days":
-        const lastWeek = new Date(today);
-        lastWeek.setDate(today.getDate() - 7);
-        filteredData = sampleUserData.filter(
-          (data) =>
-            new Date(data.date) >= lastWeek && new Date(data.date) <= today
-        );
-        break;
-      case "thisMonth":
-        const thisMonthStart = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          1
-        );
-        filteredData = sampleUserData.filter(
-          (data) => new Date(data.date) >= thisMonthStart
-        );
-        break;
-      case "lastMonth":
-        const lastMonthStart = new Date(
-          today.getFullYear(),
-          today.getMonth() - 1,
-          1
-        );
-        const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-        filteredData = sampleUserData.filter(
-          (data) =>
-            new Date(data.date) >= lastMonthStart &&
-            new Date(data.date) <= lastMonthEnd
-        );
-        break;
-      case "customDate":
-        if (customDate) {
-          filteredData = sampleUserData.filter(
-            (data) =>
-              new Date(data.date).toDateString() ===
-              new Date(customDate).toDateString()
-          );
-        }
-        break;
-      case "customRange":
-        if (startDate && endDate) {
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          filteredData = sampleUserData.filter(
-            (data) =>
-              new Date(data.date) >= start && new Date(data.date) <= end
-          );
-        }
-        break;
-      default:
-        break;
-    }
+    filteredData = sampleUserData.filter((data) => {
+      const date = new Date(data.date);
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return date >= start && date <= end;
+      } else {
+        return date >= lastWeek && date <= today;
+      }
+    });
 
     setReportData(filteredData);
   };
 
-  const handleRangeChange = (e) => {
-    setSelectedRange(e.target.value);
-  };
-  const handleDateChange = (e) => {
-    setCustomDate(e.target.value);
-    setSelectedRange("customDate");
-  };
-  const handleStartDateChange = (e) => {
-    setStartDate(e.target.value);
-    setSelectedRange("customRange");
-  };
-  const handleEndDateChange = (e) => {
-    setEndDate(e.target.value);
-    setSelectedRange("customRange");
+  const handleDateRangeChange = (startDate, endDate) => {
+    setDateRange({ startDate, endDate });
   };
 
   const downloadExcel = () => {
@@ -164,62 +94,12 @@ function Report() {
   return (
     <div className="max-w-[1400px] mx-auto px-2 py-3">
       <h2 className="text-3xl font-bold text-center">Report Page</h2>
-      <div className="report-filter">
-        <p className="text-lg">Select range:</p>
-        <select
-          value={selectedRange}
-          onChange={handleRangeChange}
-          className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
-        >
-          <option value="today">Today</option>
-          <option value="yesterday">Yesterday</option>
-          <option value="last7days">Last 7 Days</option>
-          <option value="thisMonth">This Month</option>
-          <option value="lastMonth">Last Month</option>
-          <option value="customDate">Custom Date</option>
-          <option value="customRange">Custom Range</option>
-        </select>
-        {selectedRange === "customDate" && (
-          <input
-            type="date"
-            value={customDate}
-            onChange={handleDateChange}
-            className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
-          />
-        )}
-        {selectedRange === "customRange" && (
-          <>
-            <input
-              type="date"
-              value={startDate}
-              onChange={handleStartDateChange}
-              placeholder="Start Date"
-              className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
-            />
-            <input
-              type="date"
-              value={endDate}
-              onChange={handleEndDateChange}
-              placeholder="End Date"
-              className="w-full border h-10 xl:h-12 px-2 outline-none cursor-pointer"
-            />
-          </>
-        )}
-        <button
-          className="text-orange-700"
-          onClick={() => fetchReportData(selectedRange)}
-        >
-          Show Report
-        </button>
-        <button className="text-orange-700 ml-4" onClick={downloadExcel}>
-          Download as Excel
-        </button>
-      </div>
+      <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
 
-      <div className="report-results text-center mt-8 px-4">
+      <div className="report-results text-center mt-10 px-8">
         {reportData.length > 0 ? (
           <table className="w-full border">
-            <thead className="bg-orange-600 text-sm text-white h-12 font-semibold">
+            <thead className="bg-orange-600 text-sm text-white h-20 font-semibold">
               <tr>
                 <th>S/N</th>
                 <th>Username</th>
@@ -266,9 +146,15 @@ function Report() {
             </tbody>
           </table>
         ) : (
-          <p className="text-red-500">No report data found for the selected range.</p>
+          <p className="text-red-500">
+            No report data found for the selected range.
+          </p>
         )}
       </div>
+
+      <button className="text-orange-700 mt-4" onClick={downloadExcel}>
+        Download as Excel
+      </button>
     </div>
   );
 }
