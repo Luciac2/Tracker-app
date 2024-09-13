@@ -2,8 +2,11 @@ import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
 
 const Layout = () => {
+
+  const token = localStorage.getItem("token");
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pl-4">
       {/* Main Content Area */}
       <div className="flex flex-grow">
         {/* Sidebar */}
@@ -48,30 +51,34 @@ const Layout = () => {
                 Report
               </NavLink>
             </li>
+           { !token &&
             <li>
-              <NavLink
-                to="/loginpage"
-                className={({ isActive }) =>
-                  isActive
-                    ? "underline block p-2 hover:bg-orange-700 rounded"
-                    : "block p-2 hover:bg-orange-700 rounded"
-                }
-              >
-                Login
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/signup"
-                className={({ isActive }) =>
-                  isActive
-                    ? "underline block p-2 hover:bg-orange-700 rounded"
-                    : "block p-2 hover:bg-orange-700 rounded"
-                }
-              >
-                Sign Up
-              </NavLink>
-            </li>
+            <NavLink
+              to="/loginpage"
+              className={({ isActive }) =>
+                isActive
+                  ? "underline block p-2 hover:bg-orange-700 rounded"
+                  : "block p-2 hover:bg-orange-700 rounded"
+              }
+            >
+              Login
+            </NavLink>
+          </li>
+          }
+          { !token &&
+          <li>
+            <NavLink
+              to="/signup"
+              className={({ isActive }) =>
+                isActive
+                  ? "underline block p-2 hover:bg-orange-700 rounded"
+                  : "block p-2 hover:bg-orange-700 rounded"
+              }
+            >
+              Sign Up
+            </NavLink>
+          </li>
+          }
           </ul>
         </aside>
 
