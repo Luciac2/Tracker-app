@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { ReactComponent as GallIcon } from "../../../src/assets/icons/gallery-svgrepo-co.svg"
-import { ReactComponent as GalIcon } from "../../../src/assets/icons/gallery-svgrepo-co copy.svg"
-import { ReactComponent as UploadIcon } from "../../../src/assets/icons/upload.svg"
+import { ReactComponent as GallIcon } from "../../../src/assets/icons/gallery-svgrepo-co.svg";
+import { ReactComponent as GalIcon } from "../../../src/assets/icons/gallery-svgrepo-co copy.svg";
+import { ReactComponent as UploadIcon } from "../../../src/assets/icons/upload.svg";
 
 const CheckInForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -10,7 +10,7 @@ const CheckInForm = () => {
   const [error, setError] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [preview, setPreview] = useState(null);
-  
+
   const fileInputRef = useRef(null); // Reference to file input
 
   // Handle drag over event
@@ -83,6 +83,7 @@ const CheckInForm = () => {
       }
     }
   };
+  console.log(response);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen lg:-mt-20 lg:-ml-32">

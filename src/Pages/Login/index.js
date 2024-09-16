@@ -34,6 +34,7 @@ const LoginPage = () => {
       Api.post("/login", loginData)
         .then((response) => {
           const { data } = response.data;
+          console.log(data);
 
           localStorage.setItem("token", data.userToken);
           console.log(data);
