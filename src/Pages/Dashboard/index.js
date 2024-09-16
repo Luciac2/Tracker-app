@@ -18,7 +18,7 @@ const DashboardPage = () => {
           return;
         }
 
-        const response = await axios.post(
+        const response = await axios.get(
           "https://odlcontractattendance.onrender.com/api/v1/dashboard",
           {}, // No request body required
           {
