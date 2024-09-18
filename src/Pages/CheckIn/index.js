@@ -39,6 +39,8 @@ const CheckInForm = () => {
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file)); // Show the preview of the selected image
   };
+  const token = localStorage.getItem('token')
+  // console.log(token)
 
   // Handle form submission for check-in
   const handleSubmit = async (e) => {
@@ -60,6 +62,7 @@ const CheckInForm = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
           },
         }
       );

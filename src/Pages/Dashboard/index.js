@@ -8,6 +8,7 @@ const DashboardPage = () => {
 
   // Retrieve the token from localStorage or other source
   const token = localStorage.getItem("token"); // Make sure the key matches how you stored it
+  console.log(token)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -20,7 +21,6 @@ const DashboardPage = () => {
 
         const response = await axios.get(
           "https://odlcontractattendance.onrender.com/api/v1/dashboard",
-          {}, // No request body required
           {
             headers: {
               Authorization: `Bearer ${token}`, // Use the token
