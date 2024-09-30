@@ -115,6 +115,7 @@ const CreateAccountPage = () => {
     "Fme",
     "Cee",
     "Vss",
+    "Nomad",
   ];
 
   return (

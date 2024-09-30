@@ -3,7 +3,6 @@ import * as XLSX from "xlsx"; // Import the xlsx library
 import DateRangeFilter from "./../DateRangeFilter"; // Import DateRangeFilter
 
 const sampleUserData = [
-  // Sample user data for demonstration with new fields
   {
     username: "John Doe",
     date: "2024-08-30",
@@ -93,68 +92,113 @@ function Report() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-2 py-3">
-      <h2 className="text-3xl font-bold text-center">Report Page</h2>
+      <h2 className="text-3xl font-bold text-center mb-5">Report Page</h2>
       <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
 
-      <div className="report-results text-center mt-10 px-8">
+      <div className="report-results mt-10 px-2 lg:px-8">
         {reportData.length > 0 ? (
-          <table className="w-full border">
-            <thead className="bg-orange-600 text-sm text-white h-20 font-semibold">
-              <tr>
-                <th>S/N</th>
-                <th>Username</th>
-                <th>Date</th>
-                <th>Time Checked In</th>
-                <th>Status</th>
-                <th>Time Checked Out</th>
-                <th>Image Uploaded</th>
-                <th>State</th>
-                <th>Location</th>
-                <th>Full Name</th>
-                <th>Phone Number</th>
-                <th>Bank Name</th>
-                <th>Account Number</th>
-                <th>Account Name</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Responsive grid for smaller screens */}
+            <div className="grid gap-6 md:hidden">
               {reportData.map((data, index) => (
-                <tr key={index} className="py-4 bg-red-50">
-                  <td>{index + 1}</td>
-                  <td className="py-3">{data.username}</td>
-                  <td>
+                <div
+                  key={index}
+                  className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+                >
+                  <p className="font-bold">S/N: {index + 1}</p>
+                  <p className="font-bold">Username: {data.username}</p>
+                  <p>
+                    Date:{" "}
                     {new Date(data.date).toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
                       month: "short",
                       day: "numeric",
                     })}
-                  </td>
-                  <td>{data.timeCheckedIn}</td>
-                  <td>{formatStatus(data.checkInTime)}</td>
-                  <td>{data.timeCheckedOut}</td>
-                  <td>{data.imageUploaded}</td>
-                  <td>{data.state}</td>
-                  <td>{data.location}</td>
-                  <td>{data.fullName}</td>
-                  <td>{data.phoneNumber}</td>
-                  <td>{data.bankName}</td>
-                  <td>{data.accountNumber}</td>
-                  <td>{data.accountName}</td>
-                </tr>
+                  </p>
+                  <p>Time Checked In: {data.timeCheckedIn}</p>
+                  <p>Status: {formatStatus(data.checkInTime)}</p>
+                  <p>Time Checked Out: {data.timeCheckedOut}</p>
+                  <p>State: {data.state}</p>
+                  <p>Location: {data.location}</p>
+                  <p>Full Name: {data.fullName}</p>
+                  <p>Phone Number: {data.phoneNumber}</p>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* Table for larger screens */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full table-auto border">
+                <thead className="bg-orange-600 text-sm text-white h-20 font-semibold">
+                  <tr>
+                    <th className="p-2">S/N</th>
+                    <th className="p-2">Username</th>
+                    <th className="p-2">Date</th>
+                    <th className="p-2">Time Checked In</th>
+                    <th className="p-2">Status</th>
+                    <th className="p-2">Time Checked Out</th>
+                    <th className="p-2">State</th>
+                    <th className="p-2">Location</th>
+                    <th className="p-2">Full Name</th>
+                    <th className="p-2">Phone Number</th>
+                    {/* Hide these columns on smaller screens */}
+                    <th className="p-2 hidden lg:table-cell">Bank Name</th>
+                    <th className="p-2 hidden lg:table-cell">Account Number</th>
+                    <th className="p-2 hidden lg:table-cell">Account Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportData.map((data, index) => (
+                    <tr key={index} className="py-4 bg-red-50 text-sm">
+                      <td className="p-2">{index + 1}</td>
+                      <td className="py-3 p-2">{data.username}</td>
+                      <td className="p-2">
+                        {new Date(data.date).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
+                      <td className="p-2">{data.timeCheckedIn}</td>
+                      <td className="p-2">{formatStatus(data.checkInTime)}</td>
+                      <td className="p-2">{data.timeCheckedOut}</td>
+                      <td className="p-2">{data.state}</td>
+                      <td className="p-2">{data.location}</td>
+                      <td className="p-2">{data.fullName}</td>
+                      <td className="p-2">{data.phoneNumber}</td>
+                      {/* Hidden columns for smaller screens */}
+                      <td className="p-2 hidden lg:table-cell">
+                        {data.bankName}
+                      </td>
+                      <td className="p-2 hidden lg:table-cell">
+                        {data.accountNumber}
+                      </td>
+                      <td className="p-2 hidden lg:table-cell">
+                        {data.accountName}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
-          <p className="text-red-500">
+          <p className="text-red-500 text-center">
             No report data found for the selected range.
           </p>
         )}
       </div>
 
-      <button className="text-orange-700 mt-4" onClick={downloadExcel}>
-        Download as Excel
-      </button>
+      <div className="flex justify-center mt-6">
+        <button
+          className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-600"
+          onClick={downloadExcel}
+        >
+          Download as Excel
+        </button>
+      </div>
     </div>
   );
 }

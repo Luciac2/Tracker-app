@@ -8,10 +8,10 @@ import Login from "./Pages/Login";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPassword from "./Pages/Resetpassword"; //
 import CheckIn from "./Pages/CheckIn";
+import CheckOut from "./Pages/CheckOut";
 import Dashboard from "./Pages/Dashboard";
 import DateRangeFilter from "./Pages/DateRangeFilter";
 import Report from "./Pages/Report";
-// import CheckinPage from "./Pages/CheckinPage";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
         <Route path="/Signup" element={<CreateAccountPage />} />
         <Route path="/Loginpage" element={<Login />} />
         <Route path="/CheckIn" element={<CheckIn />} />
+        <Route path="/CheckOut" element={<CheckOut />} />
         <Route path="/report" element={<Report />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/DateRangeFilter" element={<DateRangeFilter />} />
