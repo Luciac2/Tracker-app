@@ -35,6 +35,8 @@ const CheckInForm = () => {
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
   };
+  const token = localStorage.getItem("token");
+  // console.log(token)
 
   const handleSubmit = async (e) => {
     e.preventDefault();

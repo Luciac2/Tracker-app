@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Api } from "../../api/api.config";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
@@ -43,6 +44,7 @@ const LoginPage = () => {
         .catch((error) => {
           console.error(error);
           setSubmitting(false);
+          toast.error(error?.response?.data?.message)
         });
       console.log("Login form submitted", loginData);
     }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Api } from "../../api/api.config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { toast } from "react-toastify";
 
 const CreateAccountPage = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +42,11 @@ const CreateAccountPage = () => {
           form.append(key, formData[key]);
         }
       });
-
+      // if(form)
+      if (formData.fullName !== formData.accountName) {
+        setSubmitting(false);
+        return toast.error("Full name and account name must be the same");
+      }
       try {
         const response = await Api.post("/signup", form, {
           headers: {
@@ -70,6 +75,7 @@ const CreateAccountPage = () => {
           const errorCode = error.response.status;
           console.error(`Problem occurred. Received status: ${errorCode}`);
           console.error("Error details:", error.response.data);
+          toast.error(error?.response?.data?.message);
         } else {
           console.error("Did not receive response");
         }
