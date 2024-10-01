@@ -17,17 +17,16 @@ const DashboardPage = () => {
           setLoading(false);
           return;
         }
-
-        const response = await axios.post(
-          "https://odlcontractattendance.onrender.com/api/v1/dashboard",
-          {}, // No request body required
+    
+        const response = await axios.get(
+          "https://odlcontractattendance.onrender.com/api/v1/dashboard", // Change to GET request
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Use the token
+              Authorization: `Bearer ${token}`, // Pass the token in the headers
             },
           }
         );
-
+    
         if (response.status === 200) {
           setDashboardData(response.data.data); // Extract data from the response
           setLoading(false);
@@ -44,7 +43,7 @@ const DashboardPage = () => {
           console.error("Response Headers:", err.response.headers);
           setError(
             err.response.data.message ||
-              "Failed to load dashboard data. Please try again."
+            "Failed to load dashboard data. Please try again."
           );
         } else if (err.request) {
           // Handle cases where the request was made, but no response was received
@@ -59,7 +58,7 @@ const DashboardPage = () => {
         }
         setLoading(false);
       }
-    };
+    };    
 
     fetchDashboardData();
   }, [token]); // Add token as a dependency
