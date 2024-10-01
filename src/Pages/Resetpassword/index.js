@@ -29,7 +29,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await Api.post(`/resetpassword/${id}/${token}`, {
+      const response = await Api.put(`/resetpassword/${id}/${token}`, {
         newPassword,
       });
       if (response.status === 200) {
