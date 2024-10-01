@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Api } from "../../api/api.config";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
@@ -33,6 +34,7 @@ const LoginPage = () => {
       Api.post("/login", loginData)
         .then((response) => {
           const { data } = response.data;
+          console.log(data);
 
           localStorage.setItem("token", data.userToken);
           console.log(data);
@@ -42,6 +44,7 @@ const LoginPage = () => {
         .catch((error) => {
           console.error(error);
           setSubmitting(false);
+          toast.error(error?.response?.data?.message)
         });
       console.log("Login form submitted", loginData);
     }
