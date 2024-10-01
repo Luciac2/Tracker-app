@@ -16,7 +16,6 @@ const DashboardPage = () => {
   });
 
   const token = localStorage.getItem("token");
-  console.log(token);
 
   useEffect(() => {
     const fetchDashboardData = async () => {

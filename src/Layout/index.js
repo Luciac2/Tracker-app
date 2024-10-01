@@ -12,6 +12,7 @@ import {
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const token = localStorage.getItem("token");
+  const isAdmin = localStorage.getItem("isAdmin");
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -59,6 +60,7 @@ const Layout = () => {
               Attendance App
             </NavLink>
           </div>
+          {token &&(
           <ul className="space-y-2">
             <li>
               <NavLink
@@ -102,7 +104,8 @@ const Layout = () => {
                 <span>Check-Out</span>
               </NavLink>
             </li>
-            <li>
+           {isAdmin === "true" &&(
+             <li>
               <NavLink
                 to="/report"
                 className={({ isActive }) =>
@@ -116,6 +119,9 @@ const Layout = () => {
                 <span>Report</span>
               </NavLink>
             </li>
+           )}
+          </ul>)}
+          <ul className="space-y-">
             {!token && (
               <li>
                 <NavLink
