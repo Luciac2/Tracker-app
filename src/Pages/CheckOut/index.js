@@ -10,7 +10,7 @@ const CheckOutForm = () => {
   const [error, setError] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [preview, setPreview] = useState(null);
-
+  const token = localStorage.getItem("token");
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -67,6 +67,8 @@ const CheckOutForm = () => {
   };
 
   return (
+    <div>
+    {token && (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <div className="text-center">
@@ -172,6 +174,7 @@ const CheckOutForm = () => {
           <p>{typeof error === "string" ? error : JSON.stringify(error)}</p>
         </div>
       )}
+    </div>)}
     </div>
   );
 };

@@ -65,6 +65,8 @@ const CheckInForm = () => {
   };
 
   return (
+    <div>
+    {token && (
     <div className="flex flex-col items-center justify-center min-h-screen lg:-mt-20 lg:-ml-32 px-4 md:px-0">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
         <div className="text-center">
@@ -168,6 +170,7 @@ const CheckInForm = () => {
           <p>{typeof error === "string" ? error : JSON.stringify(error)}</p>
         </div>
       )}
+    </div>)}
     </div>
   );
 };

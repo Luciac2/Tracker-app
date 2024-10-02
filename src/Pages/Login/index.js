@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Api } from "../../api/api.config";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     passWord: "",
   });
+  const navigate = useNavigate()
   const [submitting, setSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +28,10 @@ const LoginPage = () => {
     }
   };
 
+  const handleReload = () => {
+    window.location.reload();  // This will reload the current page
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login submission
@@ -37,7 +43,10 @@ const LoginPage = () => {
           console.log(data);
 
           localStorage.setItem("token", data.userToken);
+          localStorage.setItem("isAdmin", data.isAdmin);
           console.log(data);
+          navigate("/dashboard")
+          handleReload()
           console.log(response);
           setSubmitting(false);
         })
