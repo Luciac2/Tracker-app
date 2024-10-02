@@ -7,11 +7,14 @@ import {
   FaCheckCircle,
   FaFileAlt,
   FaSignOutAlt,
-} from "react-icons/fa"; //  icons
+  FaUserShield,
+  FaUsers,
+} from "react-icons/fa";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole"); // Assuming the user's role is stored in local storage.
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -116,37 +119,76 @@ const Layout = () => {
                 <span>Report</span>
               </NavLink>
             </li>
-            {!token && (
-              <li>
-                <NavLink
-                  to="/loginpage"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                      : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                  }
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  <FaSignInAlt />
-                  <span>Login</span>
-                </NavLink>
-              </li>
+
+            {/* Admin Section */}
+            {userRole === "admin" && (
+              <>
+                <li className="mt-4">
+                  <h4 className="font-bold text-lg">Admin</h4>
+                </li>
+                <li>
+                  <NavLink
+                    to="/admin/approve-reject"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaUserShield />
+                    <span>Approve/Reject Users</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/admin/user-management"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaUsers />
+                    <span>User Management</span>
+                  </NavLink>
+                </li>
+              </>
             )}
+
+            {/* Login/Sign Up for guests */}
             {!token && (
-              <li>
-                <NavLink
-                  to="/signup"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                      : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                  }
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  <FaClipboardList />
-                  <span>Sign Up</span>
-                </NavLink>
-              </li>
+              <>
+                <li>
+                  <NavLink
+                    to="/loginpage"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaSignInAlt />
+                    <span>Login</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/signup"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaClipboardList />
+                    <span>Sign Up</span>
+                  </NavLink>
+                </li>
+              </>
             )}
           </ul>
         </aside>

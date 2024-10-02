@@ -6,11 +6,12 @@ import "./App.css";
 import CreateAccountPage from "./Pages/CreateAccountPage";
 import Login from "./Pages/Login";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
-import ResetPassword from "./Pages/Resetpassword"; //
+import ResetPassword from "./Pages/Resetpassword";
 import CheckIn from "./Pages/CheckIn";
 import CheckOut from "./Pages/CheckOut";
 import Dashboard from "./Pages/Dashboard";
 import DateRangeFilter from "./Pages/DateRangeFilter";
+import Admin from "./Pages/Admin";
 import Report from "./Pages/Report";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/DateRangeFilter" element={<DateRangeFilter />} />
-
+        <Route path="/Admin" element={<Admin />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageError />} />
@@ -34,4 +35,5 @@ function App() {
     </Routes>
   );
 }
+
 export default App;
