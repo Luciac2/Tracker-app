@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Import useCallback
 import * as XLSX from "xlsx"; // Import the xlsx library
 import DateRangeFilter from "./../DateRangeFilter"; // Import DateRangeFilter
 
@@ -41,11 +41,8 @@ function Report() {
   const [reportData, setReportData] = useState([]);
   const [dateRange, setDateRange] = useState({ startDate: "", endDate: "" });
 
-  useEffect(() => {
-    fetchReportData();
-  }, [dateRange]);
-
-  const fetchReportData = () => {
+  // Wrap fetchReportData with useCallback
+  const fetchReportData = useCallback(() => {
     let filteredData = [];
     const { startDate, endDate } = dateRange;
     const today = new Date();
@@ -64,7 +61,11 @@ function Report() {
     });
 
     setReportData(filteredData);
-  };
+  }, [dateRange]); // Include dateRange as a dependency
+
+  useEffect(() => {
+    fetchReportData();
+  }, [fetchReportData]); // Now it's safe to include fetchReportData
 
   const handleDateRangeChange = (startDate, endDate) => {
     setDateRange({ startDate, endDate });

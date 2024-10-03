@@ -7,7 +7,9 @@ import {
   FaCheckCircle,
   FaFileAlt,
   FaSignOutAlt,
-} from "react-icons/fa"; //  icons
+  FaUserShield,
+  FaUsers,
+} from "react-icons/fa";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -119,40 +121,37 @@ const Layout = () => {
                 <span>Report</span>
               </NavLink>
             </li>
-           )}
-          </ul>)}
-          <ul className="space-y-">
             {!token && (
-              <li>
-                <NavLink
-                  to="/loginpage"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                      : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                  }
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  <FaSignInAlt />
-                  <span>Login</span>
-                </NavLink>
-              </li>
-            )}
-            {!token && (
-              <li>
-                <NavLink
-                  to="/signup"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                      : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                  }
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  <FaClipboardList />
-                  <span>Sign Up</span>
-                </NavLink>
-              </li>
+              <>
+                <li>
+                  <NavLink
+                    to="/loginpage"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaSignInAlt />
+                    <span>Login</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/signup"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+                    }
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <FaClipboardList />
+                    <span>Sign Up</span>
+                  </NavLink>
+                </li>
+              </>
             )}
           </ul>
         </aside>
