@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../api/api.config";
 
-const ApproveRejectForm = ({ userId, token, userEmail }) => {
+const ApproveRejectForm = ({ userId, token,}) => {
   const [status, setStatus] = useState("");
+  const [email, setEmail] = useState("");
   const [reasons, setReasons] = useState("");
   const [message, setMessage] = useState("");
 
   // Define the email with permission
   const authorizedEmail = "onyedikachilucia726@gmail.com";
+  const userEmail = "onyedikachilucia726@gmail.com";
 
   useEffect(() => {
     // Check if the user email has permission to perform the action
@@ -68,6 +70,22 @@ const ApproveRejectForm = ({ userId, token, userEmail }) => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              className="block text-sm font-medium text-gray-700 mb-2"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              placeholder="Enter email..."
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            />
+          </div>
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-2"

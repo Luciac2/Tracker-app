@@ -62,7 +62,8 @@ const Layout = () => {
               Attendance App
             </NavLink>
           </div>
-          {token &&(
+          <ul>
+          {token && (
           <ul className="space-y-2">
             <li>
               <NavLink
@@ -120,7 +121,10 @@ const Layout = () => {
                 <FaFileAlt />
                 <span>Report</span>
               </NavLink>
-            </li>
+            </li>)}
+          </ul>)}
+          </ul>
+          <ul>
             {!token && (
               <>
                 <li>
