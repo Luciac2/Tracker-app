@@ -7,7 +7,7 @@ function DateRangeFilter({ onDateRangeChange }) {
 
   const handleSearch = () => {
     if (dateFrom && dateTo) {
-      onDateRangeChange(dateFrom, dateTo);
+      onDateRangeChange(dateFrom, dateTo); // Pass the selected dates to the parent
     } else {
       alert("Please select both start and end dates.");
     }
@@ -22,7 +22,7 @@ function DateRangeFilter({ onDateRangeChange }) {
         <input
           type="date"
           id="date-from"
-          className="date-input"
+          className="date-input border rounded p-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-500"
           value={dateFrom}
           onChange={(e) => setDateFrom(e.target.value)}
         />
@@ -36,7 +36,7 @@ function DateRangeFilter({ onDateRangeChange }) {
         <input
           type="date"
           id="date-to"
-          className="date-input"
+          className="date-input border rounded p-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-500"
           value={dateTo}
           onChange={(e) => setDateTo(e.target.value)}
         />

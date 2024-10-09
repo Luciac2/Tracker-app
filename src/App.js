@@ -13,6 +13,8 @@ import Dashboard from "./Pages/Dashboard";
 import DateRangeFilter from "./Pages/DateRangeFilter";
 import Admin from "./Pages/Admin";
 import Report from "./Pages/Report";
+import LogOut from "./Pages/LogOut";
+import PrivateRoute from "./Pages/PrivateRoute"; // Import the PrivateRoute component
 
 function App() {
   return (
@@ -22,15 +24,42 @@ function App() {
         <Route path="home" element={<Home />} />
         <Route path="/Signup" element={<CreateAccountPage />} />
         <Route path="/Loginpage" element={<Login />} />
-        <Route path="/CheckIn" element={<CheckIn />} />
-        <Route path="/CheckOut" element={<CheckOut />} />
-        <Route path="/report" element={<Report />} />
+
+        {/* Routes accessible only to users and admins */}
+        <Route
+          path="/CheckIn"
+          element={
+            <PrivateRoute element={<CheckIn />} roles={["user", "admin"]} />
+          }
+        />
+        <Route
+          path="/CheckOut"
+          element={
+            <PrivateRoute element={<CheckOut />} roles={["user", "admin"]} />
+          }
+        />
+        <Route
+          path="/Dashboard"
+          element={
+            <PrivateRoute element={<Dashboard />} roles={["user", "admin"]} />
+          }
+        />
+
+        {/* Route accessible only to admins */}
+        <Route
+          path="/Admin"
+          element={<PrivateRoute element={<Admin />} roles={["admin"]} />}
+        />
+        <Route
+          path="/report"
+          element={<PrivateRoute element={<Report />} roles={["admin"]} />}
+        />
+
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/DateRangeFilter" element={<DateRangeFilter />} />
-        <Route path="/Admin" element={<Admin />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageError />} />
+        <Route path="/LogOut" element={<LogOut />} />
       </Route>
     </Routes>
   );

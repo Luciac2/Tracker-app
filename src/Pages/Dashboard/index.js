@@ -124,9 +124,9 @@ const DashboardPage = () => {
             <img
               src={dashboardData.profilePicture?.pictureUrl || ""}
               alt="Profile"
-              className="w-16 h-16 rounded-full mr-4"
+              className="w-16 h-16 rounded-full mr-4 max-sm:hidden"
             />
-            <div>
+            <div className="">
               <h2 className="text-xl font-bold">{dashboardData.fullName}</h2>
               <p className="text-gray-500">{dashboardData.email}</p>
               <p className="text-gray-500">{dashboardData.phoneNumber}</p>

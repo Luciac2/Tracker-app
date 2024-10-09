@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Api } from "../../api/api.config";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const CreateAccountPage = () => {
@@ -20,7 +20,7 @@ const CreateAccountPage = () => {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -42,7 +42,6 @@ const CreateAccountPage = () => {
           form.append(key, formData[key]);
         }
       });
-      // if(form)
       if (formData.fullName !== formData.accountName) {
         setSubmitting(false);
         return toast.error("Full name and account name must be the same");
@@ -68,7 +67,7 @@ const CreateAccountPage = () => {
           profilePicture: null,
           role: "",
         });
-        navigate("/Loginpage"); // Redirect to the login page after successful signup
+        navigate("/Loginpage");
       } catch (error) {
         console.error("Signup failed", error);
         if (error.response) {
@@ -122,7 +121,7 @@ const CreateAccountPage = () => {
     "Cee",
     "Vss",
     "Nomad",
-    "Manger",
+    "Manager",
   ];
 
   return (
@@ -134,49 +133,60 @@ const CreateAccountPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {[
             {
+              label: "Full Name",
               name: "fullName",
               type: "text",
               placeholder: "Enter your full name",
             },
             {
+              label: "Phone Number",
               name: "phoneNumber",
               type: "tel",
               placeholder: "Enter your phone number",
               pattern: "\\d{11}",
             },
             {
+              label: "Email",
               name: "email",
               type: "email",
               placeholder: "Enter your email address",
             },
             {
+              label: "Password",
               name: "password",
               type: "password",
               placeholder: "Enter your password",
             },
             {
+              label: "Account Number",
               name: "accountNumber",
               type: "text",
               placeholder: "Enter your 10-digit account number",
               pattern: "\\d{10}",
             },
             {
+              label: "Account Name",
               name: "accountName",
               type: "text",
               placeholder: "Enter the account holder name",
             },
             {
+              label: "State",
               name: "state",
               type: "text",
               placeholder: "Enter your state of residence",
             },
             {
+              label: "Location",
               name: "location",
               type: "text",
               placeholder: "Enter your city/town",
             },
-          ].map(({ name, type, placeholder, pattern }) => (
+          ].map(({ label, name, type, placeholder, pattern }) => (
             <div key={name}>
+              <label htmlFor={name} className="block text-gray-700 font-medium">
+                {label}
+              </label>
               <input
                 id={name}
                 name={name}
@@ -191,6 +201,12 @@ const CreateAccountPage = () => {
             </div>
           ))}
           <div>
+            <label
+              htmlFor="bankName"
+              className="block text-gray-700 font-medium"
+            >
+              Bank Name
+            </label>
             <select
               id="bankName"
               name="bankName"
@@ -210,6 +226,9 @@ const CreateAccountPage = () => {
             </select>
           </div>
           <div>
+            <label htmlFor="role" className="block text-gray-700 font-medium">
+              Role
+            </label>
             <select
               id="role"
               name="role"
@@ -229,6 +248,12 @@ const CreateAccountPage = () => {
             </select>
           </div>
           <div>
+            <label
+              htmlFor="identification"
+              className="block text-gray-700 font-medium"
+            >
+              Identification Document
+            </label>
             <input
               id="identification"
               name="identification"
@@ -239,6 +264,12 @@ const CreateAccountPage = () => {
             />
           </div>
           <div>
+            <label
+              htmlFor="profilePicture"
+              className="block text-gray-700 font-medium"
+            >
+              Profile Picture
+            </label>
             <input
               id="profilePicture"
               name="profilePicture"

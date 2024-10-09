@@ -1,36 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../api/api.config";
 
-const ApproveRejectForm = ({ userId, token, userEmail }) => {
+const ApproveRejectForm = ({ userId, token }) => {
   const [status, setStatus] = useState("");
   const [reasons, setReasons] = useState("");
   const [message, setMessage] = useState("");
 
-  // Define the email with permission
+  // Define the authorized email and manager role
   const authorizedEmail = "onyedikachilucia726@gmail.com";
+  const userEmail = localStorage.getItem("userEmail");
+  const userRole = localStorage.getItem("userRole"); // Assuming you store the user role in localStorage
 
   useEffect(() => {
-    // Check if the user email has permission to perform the action
     if (userEmail !== authorizedEmail) {
       setMessage(
         "Access Denied: You do not have permission to perform this action."
       );
     }
-  }, [userEmail, authorizedEmail]);
+  }, [userEmail]);
+
+  const validateForm = () => {
+    if (status === "rejected" && !reasons) {
+      setMessage("Reasons for rejection are required.");
+      return false;
+    }
+    return true;
+  };
+
+  const sendEmailNotification = async (userEmail, status) => {
+    try {
+      const emailBody = {
+        email: userEmail,
+        status,
+      };
+
+      await Api.post("/send-email", emailBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to send email notification:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if the email matches before proceeding
-    if (userEmail !== authorizedEmail) {
-      return;
+    if (userEmail !== authorizedEmail || userRole !== "manager") {
+      return; // Deny access if not a manager
     }
 
-    // Validate status and reasons
-    if (status === "rejected" && !reasons) {
-      setMessage("Reasons for rejection are required.");
-      return;
-    }
+    if (!validateForm()) return;
 
     const requestBody = {
       status,
@@ -40,13 +62,14 @@ const ApproveRejectForm = ({ userId, token, userEmail }) => {
     try {
       const response = await Api.patch(`/approve/${userId}`, requestBody, {
         headers: {
-          "Content-Type": "application/json", // Set content type as JSON
-          Authorization: `Bearer ${token}`, // Include token for authorization
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
         setMessage(`User account has been ${status}.`);
+        await sendEmailNotification(userEmail, status); // Send email notification
       } else {
         setMessage("Failed to update account status.");
       }
@@ -55,7 +78,7 @@ const ApproveRejectForm = ({ userId, token, userEmail }) => {
     }
   };
 
-  // Show access denied message if the email does not match
+  // Render access denied message if the email does not match
   if (userEmail !== authorizedEmail) {
     return <p className="text-red-600 text-center mt-4">{message}</p>;
   }
@@ -100,7 +123,7 @@ const ApproveRejectForm = ({ userId, token, userEmail }) => {
                 id="reasons"
                 value={reasons}
                 onChange={(e) => setReasons(e.target.value)}
-                required={status === "rejected"} // Make this required if status is rejected
+                required={status === "rejected"}
                 placeholder="Provide reasons for rejection"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
               />
@@ -113,6 +136,7 @@ const ApproveRejectForm = ({ userId, token, userEmail }) => {
           >
             Submit
           </button>
+
           {message && (
             <p className="text-center text-red-600 mt-4">{message}</p>
           )}

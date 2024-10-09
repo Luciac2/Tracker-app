@@ -9,7 +9,7 @@ const LoginPage = () => {
     email: "",
     passWord: "",
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,7 @@ const LoginPage = () => {
   };
 
   const handleReload = () => {
-    window.location.reload();  // This will reload the current page
+    window.location.reload(); // This will reload the current page
   };
 
   const handleSubmit = (e) => {
@@ -39,21 +39,22 @@ const LoginPage = () => {
       setSubmitting(true);
       Api.post("/login", loginData)
         .then((response) => {
+          console.log("response", response);
           const { data } = response.data;
-          console.log(data);
 
           localStorage.setItem("token", data.userToken);
           localStorage.setItem("isAdmin", data.isAdmin);
+          localStorage.setItem("userEmail", data.email);
           console.log(data);
-          navigate("/dashboard")
-          handleReload()
+          navigate("/dashboard");
+          handleReload();
           console.log(response);
           setSubmitting(false);
         })
         .catch((error) => {
           console.error(error);
           setSubmitting(false);
-          toast.error(error?.response?.data?.message)
+          toast.error(error?.response?.data?.message);
         });
       console.log("Login form submitted", loginData);
     }

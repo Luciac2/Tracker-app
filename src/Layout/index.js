@@ -6,32 +6,46 @@ import {
   FaClipboardList,
   FaCheckCircle,
   FaFileAlt,
-  FaSignOutAlt,
   FaUserShield,
-  FaUsers,
+  FaDoorOpen,
+  FaSignOutAlt, // This import can be kept if you use it
 } from "react-icons/fa";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const token = localStorage.getItem("token");
-  const isAdmin = localStorage.getItem("isAdmin");
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
+
+  // Reusable NavLink component
+  const SidebarLink = ({ to, icon: Icon, label }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        isActive
+          ? "bg-white flex items-center space-x-2 p-2 text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
+          : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
+      }
+      onClick={closeSidebar}
+    >
+      <Icon />
+      <span>{label}</span>
+    </NavLink>
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header with toggle button for small screens */}
-      <header className="bg-orange-600 text-white p-4 flex justify-between items-center md:hidden shadow-md">
+      {/* Header */}
+      <header className="bg-orange-600 text-white p-4 flex justify-between items-center lg:hidden shadow-md">
         <div className="text-2xl font-bold">
           <NavLink to="/">Attendance App</NavLink>
         </div>
         <button
           onClick={toggleSidebar}
+          aria-label="Toggle sidebar"
           className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
         >
-          {/* Hamburger Icon */}
           <svg
             className="w-6 h-6"
             fill="none"
@@ -53,111 +67,74 @@ const Layout = () => {
         {/* Sidebar */}
         <aside
           className={`${
-            isSidebarOpen ? "block" : "hidden"
-          } md:block w-64 bg-orange-600 text-white p-4 flex-shrink-0 md:relative fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out shadow-lg`}
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } fixed lg:static lg:translate-x-0 inset-y-0 left-0 w-64 bg-orange-600 text-white p-4 shadow-lg lg:flex-shrink-0 transition-transform duration-300 ease-in-out z-50`}
         >
-          {/* sidebar only on large screens */}
           <div className="hidden md:block text-2xl font-bold mb-6">
-            <NavLink to="/" onClick={() => setIsSidebarOpen(false)}>
+            <NavLink to="/" onClick={closeSidebar}>
               Attendance App
             </NavLink>
           </div>
-          {token &&(
+
+          {/* Navigation links */}
           <ul className="space-y-2">
             <li>
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                    : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <FaHome />
-                <span>Dashboard</span>
-              </NavLink>
+              <SidebarLink to="/dashboard" icon={FaHome} label="Dashboard" />
             </li>
             <li>
-              <NavLink
-                to="/Checkin"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                    : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <FaCheckCircle />
-                <span>Check-in</span>
-              </NavLink>
+              <SidebarLink
+                to="/checkin"
+                icon={FaCheckCircle}
+                label="Check-in"
+              />
             </li>
             <li>
-              <NavLink
-                to="/Checkout"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                    : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <FaSignOutAlt />
-                <span>Check-Out</span>
-              </NavLink>
+              <SidebarLink to="/checkout" icon={FaDoorOpen} label="Check-out" />
             </li>
-           {isAdmin === "true" &&(
-             <li>
-              <NavLink
-                to="/report"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                    : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <FaFileAlt />
-                <span>Report</span>
-              </NavLink>
+            <li>
+              <SidebarLink to="/admin" icon={FaUserShield} label="Admin" />
             </li>
+            <li>
+              <SidebarLink to="/report" icon={FaFileAlt} label="Report" />
+            </li>
+
             {!token && (
               <>
                 <li>
-                  <NavLink
+                  <SidebarLink
                     to="/loginpage"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                    }
-                    onClick={() => setIsSidebarOpen(false)}
-                  >
-                    <FaSignInAlt />
-                    <span>Login</span>
-                  </NavLink>
+                    icon={FaSignInAlt}
+                    label="Login"
+                  />
                 </li>
                 <li>
-                  <NavLink
+                  <SidebarLink
                     to="/signup"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-white text-orange-600 font-semibold block p-2 rounded-lg shadow-md"
-                        : "flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-500 transition duration-200"
-                    }
-                    onClick={() => setIsSidebarOpen(false)}
-                  >
-                    <FaClipboardList />
-                    <span>Sign Up</span>
-                  </NavLink>
+                    icon={FaClipboardList}
+                    label="Sign Up"
+                  />
                 </li>
               </>
+            )}
+
+            {token && ( // Render Logout Link if the user is logged in
+              <li>
+                <SidebarLink
+                  to="/logout" // Update this route according to your application
+                  icon={FaSignOutAlt}
+                  label="Logout"
+                />
+              </li>
             )}
           </ul>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-grow p-6 bg-gray-100 transition-all ease-in-out duration-500 shadow-md rounded-md">
+        {/* Main content */}
+        <main
+          className={`flex-grow transition-all ease-in-out duration-500 ${
+            isSidebarOpen ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
           <Outlet />
         </main>
       </div>
