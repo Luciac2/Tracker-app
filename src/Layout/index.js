@@ -91,6 +91,7 @@ const Layout = () => {
             <li>
               <SidebarLink to="/checkout" icon={FaDoorOpen} label="Check-out" />
             </li>
+            {}
             <li>
               <SidebarLink to="/admin" icon={FaUserShield} label="Admin" />
             </li>

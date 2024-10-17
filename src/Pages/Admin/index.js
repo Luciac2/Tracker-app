@@ -1,149 +1,188 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Api } from "../../api/api.config";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllUser } from "../../features/user/UserSlice";
 
-const ApproveRejectForm = ({ userId, token }) => {
-  const [status, setStatus] = useState("");
-  const [reasons, setReasons] = useState("");
-  const [message, setMessage] = useState("");
-
-  // Define the authorized email and manager role
-  const authorizedEmail = "onyedikachilucia726@gmail.com";
-  const userEmail = localStorage.getItem("userEmail");
-  const userRole = localStorage.getItem("userRole"); // Assuming you store the user role in localStorage
+const AllAccounts = () => {
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [actionMessage, setActionMessage] = useState("");
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [selectedAccountId, setSelectedAccountId] = useState(null);
+  const dispatch = useDispatch();
+  const { users } = useSelector((state) => state.user);
+  console.log("all users: ", users.data);
+  const token = localStorage.getItem("authToken"); // this to Fetch token securely
 
   useEffect(() => {
-    if (userEmail !== authorizedEmail) {
-      setMessage(
-        "Access Denied: You do not have permission to perform this action."
-      );
-    }
-  }, [userEmail]);
+    const fetchAccounts = async () => {
+      try {
+        dispatch(fetchAllUser(token));
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to load accounts.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const validateForm = () => {
-    if (status === "rejected" && !reasons) {
-      setMessage("Reasons for rejection are required.");
-      return false;
-    }
-    return true;
-  };
+    fetchAccounts();
+  }, [dispatch]);
 
-  const sendEmailNotification = async (userEmail, status) => {
-    try {
-      const emailBody = {
-        email: userEmail,
-        status,
-      };
-
-      await Api.post("/send-email", emailBody, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } catch (error) {
-      console.error("Failed to send email notification:", error);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (userEmail !== authorizedEmail || userRole !== "manager") {
-      return; // Deny access if not a manager
+  const handleAction = async (accountId, action) => {
+    if (action === "reject" && !rejectionReason) {
+      setShowRejectionModal(true);
+      setSelectedAccountId(accountId);
+      return;
     }
 
-    if (!validateForm()) return;
-
-    const requestBody = {
-      status,
-      ...(status === "rejected" && { reasons }), // Add reasons only if status is rejected
+    const payload = {
+      status: action,
+      reasons: action === "rejected" ? rejectionReason : null,
     };
 
     try {
-      const response = await Api.patch(`/approve/${userId}`, requestBody, {
+      const response = await Api.put(`/approve/${accountId}`, payload, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       if (response.status === 200) {
-        setMessage(`User account has been ${status}.`);
-        await sendEmailNotification(userEmail, status); // Send email notification
-      } else {
-        setMessage("Failed to update account status.");
+        setActionMessage(`Account has been ${action}.`);
+        setRejectionReason("");
+        setSelectedAccountId(null);
+
+        const updatedResponse = await Api.get("/allaccounts", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setAccounts(updatedResponse.data.data);
       }
-    } catch (error) {
-      setMessage("An error occurred while updating the account status.");
+    } catch (err) {
+      console.error("Error updating account status:", err);
+      setActionMessage(
+        err.response?.data?.message ||
+          "An error occurred while updating the account status."
+      );
     }
   };
 
-  // Render access denied message if the email does not match
-  if (userEmail !== authorizedEmail) {
-    return <p className="text-red-600 text-center mt-4">{message}</p>;
+  if (loading) {
+    return <div className="text-center text-gray-500">Loading accounts...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
+  if (users && users.data && users.data.length === 0) {
+    return <div className="text-center text-gray-500">No accounts found.</div>;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Approve/Reject User
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="status"
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-center mb-6">
+        Account List for Approval
+      </h1>
+      {actionMessage && (
+        <div className="text-center text-green-500 mb-4">{actionMessage}</div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {users &&
+          users.data &&
+          users.data.map((account) => (
+            <div
+              key={account._id}
+              className="bg-white shadow-md rounded-lg p-4"
             >
-              Status
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
-            >
-              <option value="">Select Status</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-
-          {status === "rejected" && (
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                htmlFor="reasons"
-              >
-                Reasons for rejection
-              </label>
-              <textarea
-                id="reasons"
-                value={reasons}
-                onChange={(e) => setReasons(e.target.value)}
-                required={status === "rejected"}
-                placeholder="Provide reasons for rejection"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
-              />
+              <div className="flex items-center space-x-4 mb-4">
+                <img
+                  src={
+                    account.profilePicture?.pictureUrl ||
+                    "https://via.placeholder.com/100"
+                  }
+                  alt="Profile-pics"
+                  className="w-16 h-16 rounded-full"
+                />
+                <div>
+                  <h2 className="text-xl font-semibold">{account.fullName}</h2>
+                  <p className="text-gray-600">{account.role}</p>
+                </div>
+              </div>
+              <p className="text-sm">
+                <strong>Email:</strong> {account.email}
+              </p>
+              <p className="text-sm">
+                <strong>Phone:</strong> {account.phoneNumber}
+              </p>
+              <p className="text-sm">
+                <strong>Location:</strong> {account.location}, {account.state}
+              </p>
+              <p className="text-sm">
+                <strong>Bank:</strong> {account.bankName}
+              </p>
+              <p className="text-sm">
+                <strong>Account No:</strong> {account.accountNumber}
+              </p>
+              <p className="text-sm">
+                <strong>Account Name:</strong> {account.accountName}
+              </p>
+              <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={() => handleAction(account._id, "approved")}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleAction(account._id, "reject")}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
-          >
-            Submit
-          </button>
-
-          {message && (
-            <p className="text-center text-red-600 mt-4">{message}</p>
-          )}
-        </form>
+          ))}
       </div>
+
+      {showRejectionModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 className="text-xl font-semibold mb-4">Reject Account</h2>
+            <label className="block text-gray-700 mb-2">
+              Reason for rejection:
+            </label>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              rows="4"
+            />
+            <div className="flex justify-end mt-4 space-x-2">
+              <button
+                onClick={() => setShowRejectionModal(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleAction(selectedAccountId, "rejected");
+                  setShowRejectionModal(false);
+                }}
+                className="bg-red-500 text-white px-4 py-2 rounded-md"
+              >
+                Submit Rejection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default ApproveRejectForm;
+export default AllAccounts;

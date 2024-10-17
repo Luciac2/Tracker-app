@@ -19,7 +19,22 @@ const CreateAccountPage = () => {
     role: "",
   });
 
+  const {
+    fullName,
+    phoneNumber,
+    email,
+    password,
+    bankName,
+    accountNumber,
+    accountName,
+    state,
+    location,
+    identification,
+    profilePicture,
+    role,
+  } = formData;
   const [submitting, setSubmitting] = useState(false);
+  const [isNameEmpty, setIsNameEmpty] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -28,6 +43,14 @@ const CreateAccountPage = () => {
       ...formData,
       [name]: files ? files[0] : value,
     });
+  };
+
+  const handleBlur = (e, name) => {
+    if (name === "fullName" && fullName.length === 0) {
+      setIsNameEmpty(true);
+    } else {
+      setIsNameEmpty(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -184,8 +207,12 @@ const CreateAccountPage = () => {
             },
           ].map(({ label, name, type, placeholder, pattern }) => (
             <div key={name}>
-              <label htmlFor={name} className="block text-gray-700 font-medium">
+              <label
+                htmlFor={name}
+                className="flex justify-between items-center text-gray-700 font-medium "
+              >
                 {label}
+                <div className="text-red-500">*</div>
               </label>
               <input
                 id={name}
@@ -193,11 +220,19 @@ const CreateAccountPage = () => {
                 type={type}
                 value={formData[name]}
                 onChange={handleChange}
+                onBlur={(e) => handleBlur(e, name)}
                 required
                 placeholder={placeholder}
                 pattern={pattern}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+                className={`w-full px-4 py-2 border ${
+                  name === "fullName" && isNameEmpty
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500`}
               />
+              {name === "fullName" && isNameEmpty && (
+                <p className="text-red-500 text-xs">Name is Required</p>
+              )}
             </div>
           ))}
           <div>
