@@ -31,15 +31,31 @@ const CheckInForm = () => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files[0];
-    setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
+    validateFile(file);
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    validateFile(file);
+  };
+
+  const validateFile = (file) => {
+    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      setError(
+        "Unsupported file type. Please upload a JPG, JPEG, or PNG file."
+      );
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setError("File size exceeds 2MB.");
+      return;
+    }
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
+    setError(null);
   };
+
   const token = localStorage.getItem("token");
   console.log(token);
 
@@ -55,16 +71,9 @@ const CheckInForm = () => {
     formData.append("checkIn", selectedFile);
 
     try {
-      // const res = await Api.post("/checkin", formData, {
-      // headers: {
-      //   "Content-Type": "multipart/form-data",
-      // },
-      // });
-
-      // setResponse(res.data);
-
-      // console.log("API Response:", res.data);
       dispatch(requestSignIn(formData));
+      setSelectedFile(null); // Reset the file after submission
+      setPreview(null); // Clear the preview
     } catch (error) {
       console.error("Error during check-in:", error);
       setError(error.response?.data || "Error occurred during check-in.");
@@ -113,6 +122,10 @@ const CheckInForm = () => {
                 />
               </div>
             </div>
+
+            {error && (
+              <div className="text-red-600 mb-4 text-center">{error}</div>
+            )}
 
             <div className="text-center">
               <p className="text-sm mb-2">Supported Media Formats</p>

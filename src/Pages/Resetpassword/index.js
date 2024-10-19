@@ -1,43 +1,42 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Api } from "../../api/api.config";
 import { useParams } from "react-router-dom";
+import { Api } from "../../api/api.config";
 
 const ResetPasswordPage = () => {
   const { id, token } = useParams();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "newPassword") {
-      setNewPassword(value);
-    } else if (name === "confirmPassword") {
-      setConfirmPassword(value);
-    }
+  const handleNewPasswordChange = (e) => {
+    setNewPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setMessage("Passwords do not match!");
       return;
     }
 
     try {
       const response = await Api.put(`/resetpassword/${id}/${token}`, {
         newPassword,
+        confirmPassword,
       });
-      if (response.status === 200) {
-        setMessage("Password has been reset successfully.");
-      }
+      console.log("Reset Password API response:", response.data);
+      setMessage("Password successfully updated.");
     } catch (error) {
-      console.error("Error resetting password", error);
-      setMessage("Failed to reset password. Please try again.");
+      console.error(
+        "Error updating password",
+        error.response?.data || error.message
+      );
+      setMessage("Failed to update password. Please try again.");
     }
   };
 
@@ -47,8 +46,7 @@ const ResetPasswordPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Reset Password
         </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleResetPasswordSubmit} className="space-y-6">
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-2"
@@ -56,25 +54,16 @@ const ResetPasswordPage = () => {
             >
               New Password
             </label>
-            <div className="relative">
-              <input
-                id="newPassword"
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                value={newPassword}
-                onChange={handleChange}
-                required
-                placeholder="Enter your new password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute inset-y-0 right-0 flex items-center px-3"
-              >
-                {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
+            <input
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              value={newPassword}
+              onChange={handleNewPasswordChange}
+              required
+              placeholder="Enter your new password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            />
           </div>
 
           <div>
@@ -84,25 +73,16 @@ const ResetPasswordPage = () => {
             >
               Confirm Password
             </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Confirm your new password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 flex items-center px-3"
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              required
+              placeholder="Confirm your new password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-orange-500"
+            />
           </div>
 
           <button
@@ -112,7 +92,6 @@ const ResetPasswordPage = () => {
             Reset Password
           </button>
         </form>
-
         {message && <p className="mt-4 text-center text-gray-600">{message}</p>}
       </div>
     </div>

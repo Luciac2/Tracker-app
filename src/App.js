@@ -10,7 +10,7 @@ import ResetPassword from "./Pages/Resetpassword";
 import CheckIn from "./Pages/CheckIn";
 import CheckOut from "./Pages/CheckOut";
 import Dashboard from "./Pages/Dashboard";
-import DateRangeFilter from "./Pages/DateRangeFilter";
+
 import Admin from "./Pages/Admin";
 import Report from "./Pages/Report";
 import LogOut from "./Pages/LogOut";
@@ -56,7 +56,7 @@ function App() {
         />
 
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/DateRangeFilter" element={<DateRangeFilter />} />
+
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<PageError />} />
         <Route path="/LogOut" element={<LogOut />} />
