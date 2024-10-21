@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseURL = "https://odl-contractattendance-e3v0.onrender.com/api/v1";
 
-console.log("API Base URL:", baseURL); // Add this line for debugging
+// console.log("API Base URL:", baseURL); // Add this line for debugging
 
 export const Api = axios.create({
   baseURL,

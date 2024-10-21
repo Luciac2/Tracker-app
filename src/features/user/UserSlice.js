@@ -32,9 +32,16 @@ export const requestSignIn = createAsyncThunk(
 // Request user sign-out (newly added)
 export const requestSignOut = createAsyncThunk(
   "user/requestSignOut",
-  async () => {
-    // Logic for sign out, such as clearing tokens or making an API call
-    return; // or return some confirmation message if needed
+  async (token) => {
+    try {
+      // Here you can implement your sign-out logic,
+      // e.g., clearing the user token, making an API call to log out, etc.
+      // For example:
+      await api.signOutUser(token); // Assuming you have a signOutUser method in your API
+      return "Sign out successful"; // Return a message or other data if needed
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 );
 
@@ -43,7 +50,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      return initialState;
+      return initialState; // Reset state on logout
     },
   },
   extraReducers: (builder) => {
@@ -53,7 +60,7 @@ export const userSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllUser.fulfilled, (state, action) => {
-        if (action.payload !== undefined) {
+        if (action.payload) {
           state.status = "success";
           state.users = action.payload;
         }
@@ -67,7 +74,7 @@ export const userSlice = createSlice({
         state.error = null;
       })
       .addCase(requestSignIn.fulfilled, (state, action) => {
-        if (action.payload !== undefined) {
+        if (action.payload) {
           state.status = "success";
           state.userApproval = action.payload;
         }
@@ -77,12 +84,13 @@ export const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(requestSignOut.fulfilled, (state) => {
-        state.status = "idle"; // Or any state you want after sign out
-        state.userApproval = null; // Reset user approval on sign out
+        state.status = "idle"; // Reset to idle or another state you prefer after sign out
+        state.userApproval = null; // Clear user approval on sign out
       });
   },
 });
 
+// Action creators
 export const { logout } = userSlice.actions;
 
 // Selector functions to access state

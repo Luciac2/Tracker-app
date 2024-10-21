@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Api } from "../../api/api.config";
 import { ReactComponent as GallIcon } from "../../../src/assets/icons/gallery-svgrepo-co.svg";
 import { ReactComponent as GalIcon } from "../../../src/assets/icons/gallery-svgrepo-co copy.svg";
 import { ReactComponent as UploadIcon } from "../../../src/assets/icons/upload.svg";
@@ -8,15 +7,19 @@ import { requestSignIn } from "../../features/user/UserSlice";
 
 const CheckInForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [checkInMessage, setCheckInMessage] = useState(""); // State for check-in message
   const dispatch = useDispatch();
   const { userApproval } = useSelector((state) => state.user);
+  const today = new Date().toLocaleDateString(); // Get today's date
 
   const fileInputRef = useRef(null);
   console.log("userApproval: ", userApproval, selectedFile);
+
+  // Check if already checked in today
+  const hasCheckedInToday = localStorage.getItem("checkedInDate") === today;
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -67,16 +70,24 @@ const CheckInForm = () => {
       return;
     }
 
+    if (hasCheckedInToday) {
+      setCheckInMessage("You have already checked in for today."); // Set the message
+      return;
+    }
+
     const formData = new FormData();
     formData.append("checkIn", selectedFile);
 
     try {
       dispatch(requestSignIn(formData));
+      localStorage.setItem("checkedInDate", today); // Store today's date in local storage
       setSelectedFile(null); // Reset the file after submission
       setPreview(null); // Clear the preview
+      setCheckInMessage("Check-in successful!"); // Set success message
     } catch (error) {
       console.error("Error during check-in:", error);
       setError(error.response?.data || "Error occurred during check-in.");
+      setCheckInMessage(""); // Clear message on error
     }
   };
 
@@ -127,6 +138,13 @@ const CheckInForm = () => {
               <div className="text-red-600 mb-4 text-center">{error}</div>
             )}
 
+            {/* Display the check-in message */}
+            {checkInMessage && (
+              <div className="text-center mb-4 text-orange-600">
+                {checkInMessage}
+              </div>
+            )}
+
             <div className="text-center">
               <p className="text-sm mb-2">Supported Media Formats</p>
               <div className="flex justify-center space-x-4">
@@ -175,7 +193,6 @@ const CheckInForm = () => {
               <p>Message: {userApproval.message}</p>
               <p>Location: {userApproval?.location}</p>
               <p>Check In: {userApproval?.CheckIn}</p>
-              <p>Recommended Rating: {response?.recommendedRating}</p>
               {userApproval?.attendancePicture?.pictureUrl && (
                 <img
                   src={userApproval?.attendancePicture?.pictureUrl}

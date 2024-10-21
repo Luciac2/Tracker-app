@@ -1,8 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Api } from "../../api/api.config";
-import { ReactComponent as GallIcon } from "../../../src/assets/icons/gallery-svgrepo-co.svg";
-import { ReactComponent as GalIcon } from "../../../src/assets/icons/gallery-svgrepo-co copy.svg";
-import { ReactComponent as UploadIcon } from "../../../src/assets/icons/upload.svg";
+import { ReactComponent as UploadIcon } from "../../../src/assets/icons/upload.svg"; // Ensure this SVG is correct
 import { useDispatch, useSelector } from "react-redux";
 import { requestSignOut } from "../../features/user/UserSlice"; // Adjust this import based on your Redux setup
 
@@ -14,7 +11,6 @@ const CheckOutForm = () => {
   const [preview, setPreview] = useState(null);
   const dispatch = useDispatch();
   const { userApproval } = useSelector((state) => state.user);
-
   const fileInputRef = useRef(null);
   const token = localStorage.getItem("token");
 
@@ -126,24 +122,6 @@ const CheckOutForm = () => {
             {error && (
               <div className="text-red-600 mb-4 text-center">{error}</div>
             )}
-
-            <div className="text-center">
-              <p className="text-sm mb-2">Supported Media Formats</p>
-              <div className="flex justify-center space-x-4">
-                <div>
-                  <GallIcon />
-                  <p className="text-xs text-center">JPG</p>
-                </div>
-                <div>
-                  <GalIcon />
-                  <p className="text-xs text-center">PNG</p>
-                </div>
-                <div>
-                  <GallIcon />
-                  <p className="text-xs text-center">JPEG</p>
-                </div>
-              </div>
-            </div>
 
             <div className="flex justify-between space-x-4 mt-6">
               <button
