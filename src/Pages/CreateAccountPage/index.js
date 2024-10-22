@@ -109,13 +109,13 @@ const CreateAccountPage = () => {
 
   const banksInNigeria = [
     "AccessBank",
-    "First Bank of Nigeria",
-    "Guaranty Trust Bank (GTBank)",
-    "United Bank for Africa (UBA)",
-    "Zenith Bank",
-    "Fidelity Bank",
-    "Union Bank",
-    "StanbicIBTC Bank",
+    "FirstBank",
+    "GTBank",
+    "UBA",
+    "ZenithBank",
+    "FidelityBank",
+    "UnionBank",
+    "StanbicIBTCBank",
     "Sterling Bank",
     "EcoBank",
     "PolarisBank",
@@ -125,7 +125,7 @@ const CreateAccountPage = () => {
     "Moniepoint",
     "Palmpay",
     "Kuda",
-    "Wrapspeed",
+    "Warpspeed",
     "FairMoney",
   ];
 

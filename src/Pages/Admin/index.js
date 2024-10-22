@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUser } from "../../features/user/UserSlice";
 
 const AllAccounts = () => {
+  const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionMessage, setActionMessage] = useState("");
@@ -12,8 +13,8 @@ const AllAccounts = () => {
   const [selectedAccountId, setSelectedAccountId] = useState(null);
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.user);
-  const token = localStorage.getItem("authToken");
-  const userRole = localStorage.getItem("userRole");
+  console.log("all users: ", users.data);
+  const token = localStorage.getItem("authToken"); // this to Fetch token securely
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -27,14 +28,9 @@ const AllAccounts = () => {
     };
 
     fetchAccounts();
-  }, [dispatch, token]); // Now token is included as a dependency
+  }, [dispatch]);
 
   const handleAction = async (accountId, action) => {
-    if (userRole !== "admin") {
-      setActionMessage("You are not authorized to perform this action.");
-      return;
-    }
-
     if (action === "reject" && !rejectionReason) {
       setShowRejectionModal(true);
       setSelectedAccountId(accountId);
@@ -59,8 +55,11 @@ const AllAccounts = () => {
         setRejectionReason("");
         setSelectedAccountId(null);
 
-        // Re-fetch updated accounts after action
-        dispatch(fetchAllUser(token));
+        const updatedResponse = await Api.get("/allaccounts", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setAccounts(updatedResponse.data.data);
       }
     } catch (err) {
       console.error("Error updating account status:", err);
@@ -131,22 +130,20 @@ const AllAccounts = () => {
               <p className="text-sm">
                 <strong>Account Name:</strong> {account.accountName}
               </p>
-              {userRole === "admin" && (
-                <div className="flex space-x-2 mt-4">
-                  <button
-                    onClick={() => handleAction(account._id, "approved")}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleAction(account._id, "reject")}
-                    className="bg-red-500 text-white px-4 py-2 rounded-md"
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
+              <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={() => handleAction(account._id, "approved")}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleAction(account._id, "reject")}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           ))}
       </div>
