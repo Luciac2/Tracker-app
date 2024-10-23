@@ -14,7 +14,7 @@ import {
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const token = localStorage.getItem("token");
-
+  const isAdmin = localStorage.getItem("isAdmin");
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -81,24 +81,34 @@ const Layout = () => {
             <li>
               <SidebarLink to="/dashboard" icon={FaHome} label="Dashboard" />
             </li>
-            <li>
-              <SidebarLink
-                to="/checkin"
-                icon={FaCheckCircle}
-                label="Check-in"
-              />
-            </li>
-            <li>
-              <SidebarLink to="/checkout" icon={FaDoorOpen} label="Check-out" />
-            </li>
-            {}
-            <li>
-              <SidebarLink to="/admin" icon={FaUserShield} label="Admin" />
-            </li>
-            <li>
-              <SidebarLink to="/report" icon={FaFileAlt} label="Report" />
-            </li>
-
+            {isAdmin && isAdmin === "false" && (
+              <li>
+                <SidebarLink
+                  to="/checkin"
+                  icon={FaCheckCircle}
+                  label="Check-in"
+                />
+              </li>
+            )}
+            {isAdmin && isAdmin === "false" && (
+              <li>
+                <SidebarLink
+                  to="/checkout"
+                  icon={FaDoorOpen}
+                  label="Check-out"
+                />
+              </li>
+            )}
+            {isAdmin && isAdmin === "true" && (
+              <li>
+                <SidebarLink to="/admin" icon={FaUserShield} label="Admin" />
+              </li>
+            )}
+            {isAdmin && isAdmin === "true" && (
+              <li>
+                <SidebarLink to="/report" icon={FaFileAlt} label="Report" />
+              </li>
+            )}
             {!token && (
               <>
                 <li>

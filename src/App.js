@@ -15,6 +15,9 @@ import Admin from "./Pages/Admin";
 import Report from "./Pages/Report";
 import LogOut from "./Pages/LogOut";
 import PrivateRoute from "./Pages/PrivateRoute"; // Import the PrivateRoute component
+import AdminDashboard from "./Pages/AdminDashboard/AdminDashboard";
+import ApproveUser from "./Pages/Admin/ApproveUser";
+import AssignLocation from "./Pages/Admin/AssignLocation";
 
 function App() {
   return (
@@ -47,8 +50,20 @@ function App() {
 
         {/* Route accessible only to admins */}
         <Route
-          path="/Admin"
-          element={<PrivateRoute element={<Admin />} roles={["admin"]} />}
+          path="/admin"
+          element={
+            <PrivateRoute element={<AdminDashboard />} roles={["admin"]} />
+          }
+        />
+        <Route
+          path="/admin/approve/user"
+          element={<PrivateRoute element={<ApproveUser />} roles={["admin"]} />}
+        />
+        <Route
+          path="/admin/assign/location"
+          element={
+            <PrivateRoute element={<AssignLocation />} roles={["admin"]} />
+          }
         />
         <Route
           path="/report"

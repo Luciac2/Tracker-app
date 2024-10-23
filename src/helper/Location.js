@@ -1,3 +1,165 @@
+export const region = [
+  {
+    state: "in-market",
+    location: [
+      "balogun",
+      "ikorodu",
+      "agege",
+      "ikotun",
+      "mushin",
+      "Mile12",
+      "relief",
+      "ochanja",
+      "main-mkt",
+      "agbeni",
+      "ilorin",
+      "cemetry-market",
+      "mile1",
+      "mile3",
+      "benin",
+      "uyo",
+      "sabongari",
+      "sokoto",
+      "jos",
+      "abuja",
+      "central-market",
+    ],
+  },
+
+  { state: "aba", location: ["aba-north", "aba-south", "osisioma-ngwa"] },
+
+  {
+    state: "oyo",
+    location: [
+      "ibadan-north",
+      "ibadan-south-east",
+      "ibadan-south-west",
+      "ibadan-north-east",
+      "oluyole",
+      "ibadan-north-west",
+      "ona-ara",
+      "ido",
+    ],
+  },
+
+  {
+    state: "kano",
+    location: [
+      "dala",
+      "fagge",
+      "gwale",
+      "kano-municipal",
+      "kumbotso",
+      "nassarawa",
+      "tarauni",
+      "ungogo",
+    ],
+  },
+
+  {
+    state: "onitsha",
+    location: ["idemili-north", "ogbaru", "onitsha-north", "onitsha-south"],
+  },
+
+  {
+    state: "lagos-out-market",
+    location: [
+      "ajeromi-ifelodun",
+      "alimosho-a",
+      "alimosho-b",
+      "ikorodu",
+      "kosofe",
+      "mushin",
+      "oshodi",
+      "shomolu",
+      "surulere",
+      "yaba",
+      "ikeja",
+      "badagry",
+      "lekki",
+      "epe",
+      "eti-osa",
+      "ojo",
+      "ifako-Ijaiye",
+      "agege",
+      "amuwo-odofin",
+    ],
+  },
+
+  {
+    state: "abuja",
+    location: [
+      "amac1",
+      "amac2",
+      "amac3",
+      "amac4",
+      "gwagwalada",
+      "suleja",
+      "karu-a",
+      "karu-b",
+    ],
+  },
+
+  {
+    state: "port-harcourt",
+    location: [
+      "obio-akpor-a",
+      "obio-akpor-b",
+      "obio-akpor-c",
+      "port-harcourt-city-a",
+      "port-harcourt-city-b",
+      "oyigbo",
+    ],
+  },
+
+  {
+    state: "ilorin",
+    location: [
+      "ilorin-east-a",
+      "ilorin-east-b",
+      "ilorin-south",
+      "ilorin-west-a",
+      "ilorin-west-b",
+    ],
+  },
+
+  { state: "edo", lcation: ["benin"] },
+
+  { state: "imo", location: ["owerri"] },
+
+  { state: "cross-river", location: ["calabar"] },
+
+  { state: "kaduna", location: ["kaduna", "zaria"] },
+
+  { state: "plateau", location: ["jos"] },
+
+  { state: "akwa-ibom", location: ["uyo"] },
+
+  { state: "adamawa", location: ["yola"] },
+
+  { state: "benue", location: ["makurdi"] },
+
+  { state: "delta", location: ["asaba", "warri"] },
+
+  { state: "enugu", location: ["enugu"] },
+
+  { state: "ogun", location: ["abeokuta", "ado-odo-ota"] },
+
+  { state: "katsina", location: ["katsina"] },
+
+  { state: "abia", location: ["umuahia"] },
+
+  { state: "ondo", location: ["akure"] },
+
+  { state: "niger", location: ["minna"] },
+
+  { state: "sokoto", location: ["sokoto"] },
+
+  { state: "gombe", location: ["gombe"] },
+
+  { state: "jigawa", location: ["dutse"] },
+];
+
 export const States = [
   {
     state: "Abia",

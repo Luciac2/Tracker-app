@@ -190,9 +190,13 @@
 import React, { useEffect, useState } from "react";
 import { Api } from "../../api/api.config";
 import { useDispatch, useSelector } from "react-redux";
-import { approvalUser, fetchAllUser } from "../../features/user/UserSlice";
+import {
+  allUserWaitingApproval,
+  approvalUser,
+  fetchAllUser,
+} from "../../features/user/UserSlice";
 
-const AllAccounts = () => {
+const ApproveUser = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -201,14 +205,14 @@ const AllAccounts = () => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedAccountId, setSelectedAccountId] = useState(null);
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
-  console.log("all users: ", users);
+  const { users, pendingUsers } = useSelector((state) => state.user);
+
   const token = localStorage.getItem("token"); // this to Fetch token securely
-  console.log("token ", token);
+
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        dispatch(fetchAllUser()).then((res) => console.log("admin page ", res));
+        dispatch(allUserWaitingApproval()).then((res) => console.log(" "));
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load accounts.");
       } finally {
@@ -225,20 +229,18 @@ const AllAccounts = () => {
       setSelectedAccountId(accountId);
       return;
     }
-
-    const payload = {
+    // console.log("action ", action);
+    const approveData = {
       status: action,
       reasons: action === "rejected" ? rejectionReason : null,
     };
 
     try {
-      // const response = await Api.put(`/approve/${accountId}`, payload, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      dispatch(approvalUser(accountId, payload)).then((response) => {
+      const dataApproval = {
+        approveData,
+        accountId,
+      };
+      dispatch(approvalUser(dataApproval)).then((response) => {
         console.log("approval status ", response);
         if (response.status === 200) {
           // setActionMessage(`Account has been ${action}.`);
@@ -267,7 +269,7 @@ const AllAccounts = () => {
     return <div className="text-center text-red-500">{error}</div>;
   }
 
-  if (users && users.data && users.data.length === 0) {
+  if (pendingUsers && pendingUsers.length === 0) {
     return <div className="text-center text-gray-500">No accounts found.</div>;
   }
 
@@ -280,9 +282,8 @@ const AllAccounts = () => {
         <div className="text-center text-green-500 mb-4">{actionMessage}</div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {users &&
-          users.data &&
-          users.data.map((account) => (
+        {pendingUsers &&
+          pendingUsers.map((account) => (
             <div
               key={account._id}
               className="bg-white shadow-md rounded-lg p-4"
@@ -374,4 +375,4 @@ const AllAccounts = () => {
   );
 };
 
-export default AllAccounts;
+export default ApproveUser;

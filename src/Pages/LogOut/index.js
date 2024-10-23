@@ -8,8 +8,9 @@ const LogOut = () => {
   useEffect(() => {
     // Clear user data from local storage
     localStorage.removeItem("userToken"); // Adjust this key based on your implementation
-    localStorage.removeItem("isAdmin"); // Remove any other related data as necessary
+    // localStorage.removeItem("isAdmin"); // Remove any other related data as necessary
 
+    localStorage.setItem("isAdmin", "false");
     navigate("/Home");
   }, [navigate]);
 

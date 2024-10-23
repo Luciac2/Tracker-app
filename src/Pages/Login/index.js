@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Api } from "../../api/api.config";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { ReactComponent as BouncerSpinner } from "../../assets/icons/bouncerSpinner.svg";
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState({
@@ -134,9 +135,13 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
+            className="w-full flex justify-center items-center gap-4 py-3 px-4 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
           >
-            Login
+            <div className="flex gap-4 items-center">
+              {submitting && <BouncerSpinner width={28} height={28} />}
+
+              {submitting ? <></> : <p>Login</p>}
+            </div>
           </button>
         </form>
       </div>

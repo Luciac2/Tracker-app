@@ -3,19 +3,59 @@ import * as api from "./userApi";
 
 const initialState = {
   users: [],
+  pendingUsers: [],
   status: "idle",
+  account: "",
+  actionMessage: "",
   userApproval: null,
   error: null,
 };
 
 // Fetch all users
-export const fetchAllUser = createAsyncThunk("user/fetchAll", async (token) => {
+export const fetchAllUser = createAsyncThunk("user/fetchAll", async () => {
   try {
-    return await api.fetchAllUsers(token);
+    return await api.fetchAllUsers();
   } catch (error) {
     throw new Error(error.message);
   }
 });
+
+// Fetch all users
+export const approvalUser = createAsyncThunk(
+  "user/approvaluser",
+  async (data) => {
+    try {
+      console.log("slice ", data);
+      return await api.approvalUser(data.accountId, data.approveData);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+// Fetch all users
+export const allUserWaitingApproval = createAsyncThunk(
+  "user/pendingApproval",
+  async () => {
+    try {
+      return await api.allUserThatNeedsApproval();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+// Fetch all users
+export const updateUserApprovalResponse = createAsyncThunk(
+  "user/updatedUserApproval",
+  async () => {
+    try {
+      return await api.updateApprovalResponse();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
 
 // Request user sign-in
 export const requestSignIn = createAsyncThunk(
@@ -66,6 +106,56 @@ export const userSlice = createSlice({
         }
       })
       .addCase(fetchAllUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(approvalUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(approvalUser.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.status = "success";
+          if (
+            action.payload &&
+            action.payload.data &&
+            typeof action.payload.data === "string" &&
+            action.payload.data.includes("approved")
+          ) {
+            // state.pendingUsers.filter((it) => it.)
+          }
+          state.actionMessage = action.payload;
+        }
+      })
+      .addCase(approvalUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(allUserWaitingApproval.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(allUserWaitingApproval.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.status = "success";
+          state.pendingUsers = action.payload.data;
+        }
+      })
+      .addCase(allUserWaitingApproval.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(updateUserApprovalResponse.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateUserApprovalResponse.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.status = "success";
+          state.account = action.payload;
+        }
+      })
+      .addCase(updateUserApprovalResponse.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

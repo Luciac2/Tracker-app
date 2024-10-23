@@ -1,20 +1,32 @@
 import { Api } from "../../api/api.config";
 
 // Function to set up headers
-const getHeaders = (token = null, contentType = "application/json") => {
-  const headers = {
-    "Content-Type": contentType,
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  return headers;
-};
+// let token1 = JSON.parse(localStorage.getItem("token"));
+let token = localStorage.getItem("token");
 
-export const fetchAllUsers = async (token) => {
+const getHeaders = (token, contentType) => {
+  if (token === null) {
+    const headers = {
+      "Content-Type": contentType,
+    };
+
+    return headers;
+  } else {
+    const headers = {
+      "Content-Type": contentType,
+      Authorization: `Bearer ${token}`,
+    };
+
+    return headers;
+  }
+};
+// "Content-Type": "multipart/form-data", application/json
+export const fetchAllUsers = async () => {
   try {
-    const headers = getHeaders(token);
-    const response = await Api.get("/allaccounts", { headers });
+    const response = await Api.get(
+      "/all",
+      getHeaders(token, "application/json")
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching all users:", error);
@@ -24,8 +36,11 @@ export const fetchAllUsers = async (token) => {
 
 export const signInUser = async (userDetails) => {
   try {
-    const headers = getHeaders(null, "multipart/form-data");
-    const res = await Api.post("/checkin", userDetails, { headers });
+    const res = await Api.post(
+      "/checkin",
+      userDetails,
+      getHeaders(token, "multipart/form-data")
+    );
     console.log(res.data);
     return res.data;
   } catch (error) {
@@ -36,12 +51,57 @@ export const signInUser = async (userDetails) => {
 
 export const signOutUser = async (userDetails) => {
   try {
-    const headers = getHeaders(null, "multipart/form-data");
-    const res = await Api.post("/checkOut", userDetails, { headers });
+    const res = await Api.post(
+      "/checkOut",
+      userDetails,
+      getHeaders(token, "multipart/form-data")
+    );
     console.log(res.data);
     return res.data;
   } catch (error) {
     console.error("Error signing out user:", error);
     throw error; // Re-throw the error for further handling
+  }
+};
+
+export const approvalUser = async (accountId, approveData) => {
+  try {
+    console.log("token ", token, approveData);
+    const response = await Api.put(
+      `/approve/${accountId}`,
+      approveData,
+      getHeaders(token, "application/json")
+    );
+    console.log("hsjs ".response);
+    return response.data;
+  } catch (error) {
+    console.error("Error approving user:", error);
+    throw error; // Re-throw the error for further handling
+  }
+};
+
+export const allUserThatNeedsApproval = async () => {
+  try {
+    const response = await Api.get(
+      `/pending`,
+      getHeaders(token, "application/json")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error approving user:", error);
+    throw error; // Re-throw the error for further handling
+  }
+};
+
+export const updateApprovalResponse = async () => {
+  try {
+    const res = await Api.get(
+      "/allaccounts",
+      getHeaders(token, "application/json")
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Error updating approved user:", error);
+    throw error;
   }
 };
