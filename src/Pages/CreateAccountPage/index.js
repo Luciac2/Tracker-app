@@ -236,7 +236,7 @@ const CreateAccountPage = () => {
           ))}
 
           {/* Add State Select */}
-          <div>
+          <div className="max-w-md mx-auto">
             <label
               htmlFor="state"
               className="flex justify-between items-center text-gray-700 font-medium"
@@ -250,7 +250,8 @@ const CreateAccountPage = () => {
               value={formData.state}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="block w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-700 overflow-hidden"
+              style={{ maxWidth: "100%" }} // Ensure it doesn't exceed the parent's width
             >
               <option value="">Select your state</option>
               {states.map((state, index) => (
