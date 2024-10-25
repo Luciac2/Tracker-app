@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Api } from "../../api/api.config";
-import { states, locationsByState } from "../../helper/Location"; // Ensure these are correctly exported
+import { regions, states } from "../../helper/Location";
 
 const UpdateUser = () => {
   const [selectedState, setSelectedState] = useState("");
@@ -20,28 +20,17 @@ const UpdateUser = () => {
   const fetchUsersByState = (state) => {
     console.log("Fetching users for state:", state);
     setLoading(true);
-
-    fetch(`/getbyLocation/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ state }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Response data:", data);
-        if (data && Array.isArray(data.data)) {
-          setUsers(data.data);
+    Api.post("/getbyLocation/", { state })
+      .then((response) => {
+        if (response.data && Array.isArray(response.data.data)) {
+          setUsers(response.data.data);
           setError("");
         } else {
-          console.error("Unexpected response format:", data);
-          setError("Unexpected response format.");
+          console.error("Unexpected response format:", response);
         }
       })
       .catch((error) => {
-        const errorMessage = error.message || "Error fetching users.";
-        console.error("Fetch error:", errorMessage);
+        const errorMessage = error.response?.data || "Error fetching users.";
         setError(errorMessage);
       })
       .finally(() => {
@@ -65,29 +54,21 @@ const UpdateUser = () => {
     e.preventDefault();
     if (selectedUser) {
       setLoading(true);
-
-      fetch(`/updateinfo/${selectedUser._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          state: userInfo.state,
-          location: userInfo.location,
-          phoneNumber: userInfo.phoneNumber,
-          role: userInfo.role || undefined,
-          accountNumber: userInfo.accountNumber || undefined,
-          fullName: userInfo.fullName || undefined,
-        }),
+      Api.put(`/updateinfo/${selectedUser._id}`, {
+        state: userInfo.state,
+        location: userInfo.location,
+        phoneNumber: userInfo.phoneNumber,
+        role: userInfo.role || undefined,
+        accountNumber: userInfo.accountNumber || undefined,
+        fullName: userInfo.fullName || undefined,
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then((response) => {
           setSuccessMessage("User updated successfully!");
           setError("");
         })
         .catch((error) => {
-          const errorMessage = error.message || "Error updating user.";
-          console.error("Update error:", errorMessage);
+          const errorMessage =
+            error.response?.data?.message || "Error updating user.";
           setError(errorMessage);
         })
         .finally(() => {
@@ -97,37 +78,28 @@ const UpdateUser = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 border border-gray-300 rounded-lg bg-white shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Select State</h2>
-      <select
-        onChange={handleStateChange}
-        value={selectedState}
-        className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
-      >
+    <div className="update-user-container">
+      <h2>Select State</h2>
+      <select onChange={handleStateChange} value={selectedState}>
         <option value="">Select a state</option>
-        {states.map((state, index) => (
-          <option key={index} value={state}>
-            {state}
+        {regions.map((state) => (
+          <option key={state.code} value={state.state}>
+            {state.state}
           </option>
         ))}
       </select>
 
-      {loading && <p className="text-gray-500">Loading users...</p>}
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {successMessage && (
-        <p className="text-green-500 mb-4">{successMessage}</p>
-      )}
+      {loading && <p>Loading users...</p>}
+
+      {error && <p className="error-message">{error}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
 
       {users.length > 0 && (
         <>
-          <h3 className="text-lg font-semibold mb-2">Select User</h3>
-          <ul className="list-none p-0 mb-4">
+          <h3>Select User</h3>
+          <ul>
             {users.map((user) => (
-              <li
-                key={user._id}
-                onClick={() => handleUserSelect(user)}
-                className="cursor-pointer p-2 mb-1 bg-gray-100 rounded-md hover:bg-gray-200"
-              >
+              <li key={user._id} onClick={() => handleUserSelect(user)}>
                 {user.fullName}
               </li>
             ))}
@@ -136,28 +108,30 @@ const UpdateUser = () => {
       )}
 
       {selectedUser && (
-        <form onSubmit={handleUpdateUser} className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">
-            Update User Information
-          </h3>
-          <div className="flex items-center mb-4">
+        <form onSubmit={handleUpdateUser}>
+          <h3>Update User Information</h3>
+          <div className="user-info-display">
             <img
               src={selectedUser.profilePicture?.pictureUrl}
               alt="Profile"
-              className="w-12 h-12 rounded-full mr-4 transition-transform transform hover:scale-110"
+              className="profile-pic"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+              }}
             />
             <p>
               <strong>Email:</strong> {selectedUser.email}
             </p>
           </div>
-
           <input
             type="text"
             name="state"
             value={userInfo.state || ""}
             onChange={handleInputChange}
             placeholder="State"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
@@ -165,7 +139,6 @@ const UpdateUser = () => {
             value={userInfo.location || ""}
             onChange={handleInputChange}
             placeholder="Location"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
@@ -173,7 +146,6 @@ const UpdateUser = () => {
             value={userInfo.phoneNumber || ""}
             onChange={handleInputChange}
             placeholder="Phone Number"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
@@ -181,7 +153,6 @@ const UpdateUser = () => {
             value={userInfo.role || ""}
             onChange={handleInputChange}
             placeholder="Staff Role (optional)"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
@@ -189,7 +160,6 @@ const UpdateUser = () => {
             value={userInfo.fullName || ""}
             onChange={handleInputChange}
             placeholder="Full Name (optional)"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
           <input
             type="text"
@@ -197,17 +167,99 @@ const UpdateUser = () => {
             value={userInfo.accountNumber || ""}
             onChange={handleInputChange}
             placeholder="Account Number (optional)"
-            className="block w-full mb-3 px-4 py-2 border border-gray-300 rounded-md"
           />
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-          >
+          <button type="submit" disabled={loading}>
             Update User
           </button>
         </form>
       )}
+      <style>{`
+        .update-user-container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          background-color: #f9f9f9;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+          color: #333;
+        }
+
+        select {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        ul {
+          list-style-type: none;
+          padding: 0;
+        }
+
+        li {
+          padding: 10px;
+          margin: 5px 0;
+          background-color: #e9ecef;
+          cursor: pointer;
+          border-radius: 5px;
+          transition: background-color 0.3s;
+        }
+
+        li:hover {
+          background-color: #d6d9db;
+        }
+
+        .user-info-display {
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+
+        .profile-pic {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-right: 15px;
+          transition: transform 0.3s; 
+        }
+
+        input {
+          width: calc(100% - 22px);
+          padding: 10px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        button {
+          padding: 10px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
+
+        button:hover {
+          background-color: #0056b3;
+        }
+
+        .error-message {
+          color: red;
+          margin-bottom: 10px;
+        }
+
+        .success-message {
+          color: green;
+          margin-bottom: 10px;
+        }
+      `}</style>
     </div>
   );
 };

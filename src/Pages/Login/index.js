@@ -30,7 +30,7 @@ const LoginPage = () => {
   };
 
   const handleReload = () => {
-    window.location.reload(); // This will reload the current page
+    window.location.reload();
   };
 
   const handleSubmit = (e) => {

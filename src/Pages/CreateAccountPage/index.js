@@ -3,7 +3,7 @@ import { Api } from "../../api/api.config";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ReactComponent as BouncerSpinner } from "../../assets/icons/bouncerSpinner.svg";
-import { states, locationsByState } from "../../helper/Location"; // Updated import
+import { states, locationsByState, regions } from "../../helper/Location"; // Updated import
 
 const CreateAccountPage = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +20,12 @@ const CreateAccountPage = () => {
     profilePicture: null,
     role: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [isNameEmpty, setIsNameEmpty] = useState(false);
+  const [selectStateIndex, setSelectStateIndex] = useState(0);
+  const [selectStateName, setSelectStateName] = useState("");
+  const [availableLocations, setAvailableLocations] = useState([]);
+  const navigate = useNavigate();
 
   const {
     fullName,
@@ -36,11 +42,6 @@ const CreateAccountPage = () => {
     role,
   } = formData;
 
-  const [submitting, setSubmitting] = useState(false);
-  const [isNameEmpty, setIsNameEmpty] = useState(false);
-  const [availableLocations, setAvailableLocations] = useState([]);
-  const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -53,9 +54,12 @@ const CreateAccountPage = () => {
       const selectedLocations = locationsByState[value] || [];
       setAvailableLocations(selectedLocations);
       setFormData((prev) => ({ ...prev, location: "" })); // Reset location if state changes
+      setSelectStateIndex(regions.findIndex((st) => st.state === value));
+      setSelectStateName(value);
     }
   };
 
+  console.log("state index and name ", selectStateIndex, selectStateName);
   const handleBlur = (name) => {
     if (name === "fullName" && fullName.length === 0) {
       setIsNameEmpty(true);
@@ -196,7 +200,13 @@ const CreateAccountPage = () => {
     "Nomad",
     "Manager",
   ];
-
+  console.log(
+    "region formData ",
+    regions.location,
+    regions,
+    "type of ",
+    typeof regions.location
+  );
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
@@ -254,9 +264,9 @@ const CreateAccountPage = () => {
               style={{ maxWidth: "100%" }} // Ensure it doesn't exceed the parent's width
             >
               <option value="">Select your state</option>
-              {states.map((state, index) => (
-                <option key={index} value={state}>
-                  {state}
+              {regions.map((region, index) => (
+                <option key={index} value={region.state}>
+                  {region.state}
                 </option>
               ))}
             </select>
@@ -281,11 +291,20 @@ const CreateAccountPage = () => {
               <option value="" disabled>
                 Select your location
               </option>
-              {locationsByState.map((loc, index) => (
-                <option key={index} value={loc}>
-                  {loc}
-                </option>
-              ))}
+              {regions &&
+                regions.map((region, index) => (
+                  <>
+                    {region &&
+                      region.state === selectStateName &&
+                      region.location &&
+                      Array.isArray(region.location) &&
+                      region.location.map((location, index) => (
+                        <option key={index} value={location}>
+                          {location}
+                        </option>
+                      ))}
+                  </>
+                ))}
             </select>
           </div>
 
